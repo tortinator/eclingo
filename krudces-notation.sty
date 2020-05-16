@@ -1,0 +1,160 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{krudces-notation}[2013/01/13 Custom Package]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Option parameters
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\ExecuteOptions{}
+\ProcessOptions\relax
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{bm}
+\RequirePackage{IEEEtrantools}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% basic set theory
+
+\NewCommandIfNotDefined{\set}[1]{\ensuremath{\{#1\}}}
+\NewCommandIfNotDefined{\setb}[1]{\ensuremath{\big\{\ #1\ \big\}}}
+\NewCommandIfNotDefined{\setB}[1]{\ensuremath{\Big\{\ #1\ \Big\}}}
+\NewCommandIfNotDefined{\setm}[2]{\ensuremath{\{\ #1\ \big|\ #2\ \}}}
+\NewCommandIfNotDefined{\setmb}[2]{\ensuremath{\big\{\ #1\ \ \big|\ \ #2\ \big\}}}
+\NewCommandIfNotDefined{\setmB}[2]{\ensuremath{\Big\{\ #1\ \ \Big|\ \ #2\ \Big\}}}
+
+\NewCommandIfNotDefined{\tuple}[1]{\ensuremath{\langle #1 \rangle}}
+\NewCommandIfNotDefined{\tupleb}[1]{\ensuremath{\big\langle #1 \big\rangle}}
+
+\NewCommandIfNotDefined{\eqdef}{%
+  \mathrel{\vbox{\offinterlineskip\ialign{%
+    \hfil##\hfil\cr%
+    $\scriptscriptstyle\mathrm{def}$\cr%
+    \noalign{\kern1pt}%
+    $=$\cr%
+    \noalign{\kern-0.1pt}%
+}}}}
+
+\NewCommandIfNotDefined{\restr}[2]{{% we make the whole thing an ordinary symbol
+  \left.\kern-\nulldelimiterspace % automatically resize the bar with \right
+  #1\hspace{-1pt}\right._{\hspace{-1pt}|#2}% the function
+  }}
+
+
+\NewCommandIfNotDefined{\naturals}{{\ensuremath{\mathbb{N}}}}
+\NewCommandIfNotDefined{\integers}{{\ensuremath{\mathbb{Z}}}}
+
+\NewCommandIfNotDefined{\Vars}[1]{\ensuremath{\text{Vars}(#1)}}%
+\NewCommandIfNotDefined{\Subs}[1]{\ensuremath{\text{Subs}(#1)}}%
+
+%%% logical connectives
+
+\DeclareMathOperatorIfNotDeclared{\lparrow}{\ensuremath{\leftarrow }}
+\NewCommandIfNotDefined{\impl}{\ensuremath{\rightarrow}}
+\NewCommandIfNotDefined{\imple}{\leftrightarrow}
+\DeclareMathOperatorIfNotDeclared{\Not}{\hbox{\em not}}
+\NewCommandIfNotDefined{\sNot}[1]{\ensuremath{\overline{#1}}}
+\DeclareMathOperatorIfNotDeclared{\sneg}{\sim\!}
+\DeclareMathOperatorIfNotDeclared{\Undef}{\text{\em undef}}
+
+
+%%% notation names
+
+%%% programs names
+\NewCommandIfNotDefined{\prP}{P}
+\NewCommandIfNotDefined{\prQ}{Q}
+
+%%% predicate names
+\NewCommandIfNotDefined{\pA}{p}
+\NewCommandIfNotDefined{\pB}{q}
+\NewCommandIfNotDefined{\pC}{r}
+
+%%% atoms names
+\NewCommandIfNotDefined{\aA}{a}
+\NewCommandIfNotDefined{\aB}{b}
+\NewCommandIfNotDefined{\aC}{c}
+
+%%% formula names
+\NewCommandIfNotDefined{\fA}{\varphi}
+\NewCommandIfNotDefined{\fB}{\psi}
+\NewCommandIfNotDefined{\fC}{\gamma}
+\NewCommandIfNotDefined{\fAa}{\fA_1}
+\NewCommandIfNotDefined{\fAb}{\fA_2}
+\NewCommandIfNotDefined{\fAc}{\fA_3}
+\NewCommandIfNotDefined{\fBa}{\fB_1}
+\NewCommandIfNotDefined{\fBb}{\fB_2}
+\NewCommandIfNotDefined{\fBc}{\fB_3}
+\NewCommandIfNotDefined{\fCa}{\fC_1}
+\NewCommandIfNotDefined{\fCb}{\fC_2}
+\NewCommandIfNotDefined{\fCc}{\fC_3}
+
+%%% rule name
+\NewCommandIfNotDefined{\R}{r}
+
+%%% rule indexes
+
+\NewCommandIfNotDefined{\nphead}{k}
+\NewCommandIfNotDefined{\nnhead}{l}
+\NewCommandIfNotDefined{\npbody}{m}
+\NewCommandIfNotDefined{\nnbody}{n}
+
+%%% signature
+
+\NewCommandIfNotDefined{\at}{\ensuremath{\mathit{At}}}
+\NewCommandIfNotDefined{\At}{\ensuremath{\mathit{At}}}
+\NewCommandIfNotDefined{\signature}{\ensuremath{\Sigma}}
+\NewCommandIfNotDefined{\C}{\ensuremath{\mathcal{C}}}
+\NewCommandIfNotDefined{\P}{\ensuremath{\mathcal{P}}}
+\NewCommandIfNotDefined{\F}{\ensuremath{\mathcal{F}}}
+\NewCommandIfNotDefined{\A}{\ensuremath{\mathcal{A}}}
+\NewCommandIfNotDefined{\X}{\ensuremath{\mathcal{X}}}
+\NewCommandIfNotDefined{\Ss}{\ensuremath{\mathcal{S}}}
+\NewCommandIfNotDefined{\U}{\ensuremath{\mathcal{U}}}
+\NewCommandIfNotDefined{\T}{\ensuremath{\mathcal{T}}}
+\NewCommandIfNotDefined{\HB}{\ensuremath{\mathcal{HB}}}
+
+
+%%% truth values
+
+\NewCommandIfNotDefined\tt{\boldsymbol{t}} % {\mathbf{t}}
+\NewCommandIfNotDefined\ff{\boldsymbol{f}} % {\mathbf{f}}
+\NewCommandIfNotDefined\tu{\boldsymbol{u}} % {\mathbf{u}}
+
+%%% interpretations
+
+\NewCommandIfNotDefined{\iA}{\ensuremath{I}}
+\NewCommandIfNotDefined{\iB}{\ensuremath{J}}
+\NewCommandIfNotDefined{\iC}{\ensuremath{K}}
+\NewCommandIfNotDefined{\iSet}{\ensuremath{\mathbf{I}}}
+
+\NewCommandIfNotDefined{\IA}{\ensuremath{\mathcal{I}}}
+\NewCommandIfNotDefined{\JA}{\ensuremath{\mathcal{J}}}
+\NewCommandIfNotDefined{\KA}{\ensuremath{\mathcal{K}}}
+
+\NewCommandIfNotDefined{\punctfootnote}[1]{\kern-.06em\footnote{#1}}
+\NewCommandIfNotDefined{\punctfootcite}[1]{\kern-.06em\footcite{#1}}
+
+
+\NewCommandIfNotDefined{\ground}{\ensuremath{\mathit{ground}}}
+
+\NewCommandIfNotDefined{\iiff}{iff}
+\NewCommandIfNotDefined{\wrt}{w.r.t.}
+
+\newcounter{programcount}
+\NewCommandIfNotDefined{\newprogram}{\refstepcounter{programcount}\ensuremath{P_{\arabic{programcount}}}}
+\NewCommandIfNotDefined{\programref}[1]{P_{\ref{#1}}}
+\NewCommandIfNotDefined{\program}[2]{\ensuremath{P_{#1{#2}}}}
+
+\endinput

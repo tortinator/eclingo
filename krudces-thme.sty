@@ -1,0 +1,201 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{krudces-thme}[2013/01/13 Custom Package]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Option parameters
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\def\@reptheorems{0}
+
+\DeclareOption{reptheorems}{%
+  \def\@reptheorems{1}
+}
+
+\DeclareOption{qed}{%
+  \def\@endtheorem{\qed\endtrivlist\@endpefalse}%
+}
+
+\ExecuteOptions{}
+\ProcessOptions\relax
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{amssymb}
+\RequirePackage{amsmath}
+\RequirePackage{krudces-amsthm}
+\RequirePackage{krudces-thm}
+\RequirePackage{thmtools}
+\RequirePackage{environ}
+
+\ExecuteOptions{}
+\ProcessOptions\relax
+
+
+
+
+\NewDocumentCommand{\@NewEnvironmentIfNotDefined}{ momm }{%
+  \ifcsname#1\endcsname%
+  \else%
+    \IfNoValueTF{#2}{%
+      \newenvironment{#1}{#3}{#4}%
+    }{%
+      \newenvironment{#1}[#2]{#3}{#4}%
+    }%
+  \fi%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Export Commands
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\newcounter{proofofcountersave}
+
+
+\def\extractName#1\label#2\@nil{#2}%
+\def\extractNameRef#1\ref#2\@nil{#2}%
+
+\NewEnviron{Theorem}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractName#2\@nil}%
+    \global\expandafter\let\csname \name.body\endcsname\BODY%
+    \if#10\global\expandafter\def\csname \name.start\endcsname{\theorem}%
+    \else\global\expandafter\def\csname \name.start\endcsname{\theorem[#1]}\fi%
+    \global\expandafter\def\csname \name.end\endcsname{\endtheorem}%
+    \global\expandafter\def\csname \name.counter\endcsname{theorem}%
+    \global\expandafter\def\csname \name.name\endcsname{Theorem}%
+    \expandafter\protected@xdef\csname \name.counter.value\endcsname{\thetheorem}%
+    \global\expandafter\def\csname \name.thecounter\endcsname{\thetheorem}%
+    \global\expandafter\def\csname \name.opt\endcsname{#1}%
+    \if#10\theorem%
+    \else\theorem[#1]\fi%
+    #2\BODY\endtheorem}
+
+\NewEnviron{Proposition}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractName#2\@nil}%
+    \global\expandafter\let\csname \name.body\endcsname\BODY%
+    \if#10\global\expandafter\def\csname \name.start\endcsname{\proposition}%
+    \else\global\expandafter\def\csname \name.start\endcsname{\proposition[#1]}\fi%
+    \global\expandafter\def\csname \name.end\endcsname{\endproposition}%
+    \global\expandafter\def\csname \name.counter\endcsname{proposition}%
+    \global\expandafter\def\csname \name.name\endcsname{Proposition}%
+    \expandafter\protected@xdef\csname \name.counter.value\endcsname{\theproposition}%
+    \global\expandafter\def\csname \name.thecounter\endcsname{\theproposition}%
+    \global\expandafter\def\csname \name.opt\endcsname{#1}%
+    \if#10\proposition%
+    \else\proposition[#1]\fi%
+    #2\BODY\endproposition}
+
+\NewEnviron{Lemma}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractName#2\@nil}%
+    \global\expandafter\let\csname \name.body\endcsname\BODY%
+    \if#10\global\expandafter\def\csname \name.start\endcsname{\mylemma}%
+    \else\global\expandafter\def\csname \name.start\endcsname{\mylemma[#1]}\fi%
+    \global\expandafter\def\csname \name.end\endcsname{\endmylemma}%
+    \global\expandafter\def\csname \name.counter\endcsname{mylemma}%
+    \global\expandafter\def\csname \name.name\endcsname{Lemma}%
+    \expandafter\protected@xdef\csname \name.counter.value\endcsname{\themylemma}%
+    \global\expandafter\def\csname \name.thecounter\endcsname{\themylemma}%
+    \global\expandafter\def\csname \name.opt\endcsname{#1}%
+    \if#10\mylemma%
+    \else\mylemma[#1]\fi%
+    #2\BODY\endmylemma}
+
+\NewEnviron{Corollary}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractName#2\@nil}%
+    \global\expandafter\let\csname \name.body\endcsname\BODY%
+    \if#10\global\expandafter\def\csname \name.start\endcsname{\corollary}%
+    \else\global\expandafter\def\csname \name.start\endcsname{\corollary[#1]}\fi%
+    \global\expandafter\def\csname \name.end\endcsname{\endcorollary}%
+    \global\expandafter\def\csname \name.counter\endcsname{corollary}%
+    \global\expandafter\def\csname \name.name\endcsname{Corollary}%
+    \expandafter\protected@xdef\csname \name.counter.value\endcsname{\thecorollary}%
+    \global\expandafter\def\csname \name.thecounter\endcsname{\thecorollary}%
+    \global\expandafter\def\csname \name.opt\endcsname{#1}%
+    \if#10\corollary%
+    \else\corollary[#1]\fi%
+    #2\BODY\endcorollary}
+
+  \NewEnviron{Observation}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractName#2\@nil}%
+    \global\expandafter\let\csname \name.body\endcsname\BODY%
+    % \if#10\global\expandafter\def\csname \name.start\endcsname{\observation}%
+    % \else\global\expandafter\def\csname \name.start\endcsname{\observation[#1]}\fi%
+    \global\expandafter\def\csname \name.end\endcsname{\endobservation}%
+    \global\expandafter\def\csname \name.counter\endcsname{observation}%
+    \global\expandafter\def\csname \name.name\endcsname{Observation}%
+    \expandafter\protected@xdef\csname \name.counter.value\endcsname{\theobservation}%
+    \global\expandafter\def\csname \name.thecounter\endcsname{\theobservation}%
+    \global\expandafter\def\csname \name.opt\endcsname{#1}%
+    \if#10\observation%
+    \else\observation[#1]\fi%
+    #2\BODY\endobservation}
+
+
+
+\newcommand{\reptheorem}[1]{%
+    \setcounter{proofofcountsave}{\csname #1.thecounter\endcsname}%
+    %\expandafter\setcounterref{\csname #1.counter\endcsname}{#1}%
+    \setcounter{\csname #1.counter\endcsname}{\csname #1.counter.value\endcsname}%
+    {\csname #1.start\endcsname%º
+    \csname #1.body\endcsname%
+    \csname #1.end\endcsname}%
+    \expandafter\setcounter{\csname #1.counter\endcsname}{\theproofofcountsave}%
+}
+
+\NewEnviron{SaveProofof}[2][0]{%
+    \expandafter\expandafter\def\expandafter\name{\extractNameRef#2\@nil}%
+    \global\expandafter\let\csname \name.proofbody\endcsname\BODY%
+    \BODY%
+    \if\pdf@strcmp{#1}{hide}0%
+    \else%
+    \begin{proof}%
+    hidden\dots
+    \end{proof}%
+    \fi}
+
+
+\newenvironment{proofof}[1]{\normalfont\rmfamily \trivlist
+  \pagebreak[3]\item[\hskip \labelsep {\normalfont\bf Proof of #1}.]}
+  {\hspace*{1em}\qed\endtrivlist}
+
+\@NewEnvironmentIfNotDefined{Proofof}[1]{%
+    \expandafter\expandafter\def\expandafter\name{\extractNameRef#1\@nil}%
+    \if\@reptheorems1%
+    \reptheorem{\name}%
+    \proof%
+    \else%
+    \proofof{\csname \name.name\endcsname~\ref{\name}}
+    \fi%
+    }{%
+    \if\@reptheorems1%
+    \endproof
+     \else%
+    \endproofof%
+    \fi%
+    }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+\endinput

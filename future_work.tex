@@ -1,0 +1,209 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb}
+
+\begin{document}
+\begin{itemize}
+
+\item 
+\textbf{Epistemic Logic Program.}
+Let $\mathcal{A}$ be a set of atoms,
+let $\mathcal{K(A)}$ be the set $\{ ka \mid a \in \mathcal{A}\}$, 
+and assume that $\mathcal{A}$ and $\mathcal{K(A)}$ are disjunct.
+%
+An epistemic logic program $P$ over $\mathcal{A}$
+is a logic program over $\mathcal{A}\cup\mathcal{K(A)}$
+such that all atoms occurring in the heads of the rules of 
+the program belong to $\mathcal{A}$.
+%
+A belief view $W$ of $P$ is a set of subsets of $\mathcal{A}$.
+ 
+Let $P$ be an epistemic logic program over $\mathcal{A}$, 
+and $W$ be a belief view of $P$.
+
+\item
+\textbf{G91 Reduct.} 
+The G91 Reduct of $P$ wrt. $W$, written $G91(P,W)$, 
+is the result of replacing in $P$
+every atom $ka$ such that $a \in K$ by $\top$, and
+every other occurrence of the atom $ka$ by $\bot$, 
+where $K=\bigcap_{X \in W}X$.
+
+\item
+\textbf{G11 Reduct.} 
+The G11 Reduct of $P$ wrt. $W$, written $G11(P,W)$, 
+is the result of replacing in $P$
+every positive literal $ka$ such that $a \in K$ by $a$, and
+every negative literal $not \ ka$ such that $a \in K$ by $\bot$, and
+every other occurrence of the atom $ka$ by $\bot$, 
+where $K=\bigcap_{X \in W}X$.
+
+\item
+\textbf{F(oundedness) Reduct.} 
+Let $>$ be an total order over the atoms in $\mathcal{A}$.
+%
+The F Reduct of $P$ wrt. $W$ and $>$, written $F(P,W,>)$, 
+is the result of replacing in $P$
+every positive literal $ka$ such that $a \in K$ by 
+$a \wedge \bigwedge_{b\in\mathcal{A},b < a}b$, and
+every negative literal $not \ ka$ such that $a \in K$ by $\bot$, and
+every other occurrence of the atom $ka$ by $\bot$, 
+where $K=\bigcap_{X \in W}X$.
+
+\item
+\textbf{G91-World view.} 
+$W$ is a G91-world view of $P$ if
+$W$ coincides with the set of stable models of $G91(P,W)$.
+
+\item
+\textbf{F-World view.} 
+$W$ is a F-world view of $P$ if
+$W$ coincides with the set of stable models of $G91(P,W)$, and
+there is some order $>$ over $\mathcal{A}$ such that
+$W$ is a subset of the stable models of $F(P,W,>)$.
+
+\item
+\textbf{G-World view.} 
+$W$ is a G-world view of $P$ if
+$W$ coincides with the set of stable models of $G91(P,W)$, and
+$W$ is a subset of the stable models of $G11(P,W)$.
+
+\item
+\textbf{Main Theorem from FAEEL Paper}.
+Given any program P, its equilibrium world views coincide
+with its founded G91-world views.
+
+\item
+\textbf{Hypothesis 1}.
+Given any program P, its equilibrium world views coincide
+with its F-world views.
+
+\item
+\textbf{Hypothesis 2 (wrong)}.
+Given any normal program P, its equilibrium world views coincide
+with its G-world views.
+
+\item
+\textbf{Hypothesis 2 is wrong}.
+Consider the program $P$:
+\begin{verbatim}
+{a}.
+b :-  a. c :- not a.
+c :- kb. b :- kc.
+\end{verbatim}
+$W=[\{b,c\},\{a,b,c\}]$ is a G-world view but not an
+equilibrium world view.
+%
+Note that it is also not a F-world view. 
+%
+For $b < c$ the program $F(P,W,>)$ is:
+\begin{verbatim}
+{a}.
+b :-  a. c :- not a.
+c :- b. b :- b, c.
+\end{verbatim}
+whose stable models are $\{c\}$ and $\{a,b,c\}$, 
+so $\{b,c\}$ is not a stable model of $F(P,W,>)$.
+%
+The case where $b > c$ is symmetrical.
+
+\item
+\textbf{Implementation using G-World views 
+(useless given that Hypothesis 2 is wrong)}.
+It is not difficult to extend the checker to 
+verify that all stable models of the check program 
+are also stable models of $G11(P,W)$.
+%
+The verification can also be done outside the current algorithm, 
+checking every G91-world view. 
+
+\item
+\textbf{Implementation using F-World views}.
+In this case we also would have to extend the 
+guesser to guess an order of the atoms.
+
+\item
+\textbf{Translation to Temporal Logic Programs.}
+%
+Let $P$ be an epistemic logic program.
+%
+The temporal version of $P$, written $P(t)$, 
+is the temporal logic program that consists of the rules
+\[\{\square r \mid r \in P\}\] 
+together with the rules
+\[\{(next(\square a)) \supset \square(ka) \mid a \in \mathcal{A}\}\].
+
+\item
+Let $X$ be a set of atoms, then
+$\phi(X)$ denotes the propositional formula $\bigwedge_{a \in X}a \wedge \bigwedge_{a \in \mathcal{A}\setminus X}\lnot a$. 
+
+\item
+\textbf{Hypothesis 3}.
+Given any normal program P, $W$ is an equilibrium world view of $P$ if, and only if, these conditions hold:
+\begin{enumerate}
+    \item For every $X \in W$, $P(t)$ bravely entails 
+    \[\alpha \wedge \phi(X)\]
+    \item $P(t)$ cautiously entails 
+    \[\alpha \supset \bigvee_{X \in W}\phi(X)
+    \]
+\end{enumerate}
+where $\alpha$ is
+\[next\big(\square(\bigvee_{Y \in W}\phi(Y)) \wedge \bigwedge_{Y \in W}\lozenge\phi(Y)\big).\] 
+
+\item
+\textbf{Note.} 
+I did not think about empty world views, could they break something?
+
+\item
+\textbf{Implementation with Jorge's idea.}
+In the guesser, use an ASP version of the program that consists of the rules
+\[\{\square r \mid r \in P\}\] 
+together with the rules
+\[\{(\square a) \supset \square(ka) \mid a \in \mathcal{A}\}.\]
+%
+Jorge thinks (and to me this makes sense) that we only have to consider as many steps as different subjective atoms occur in the program.
+
+\item
+This last point is incorrect, we need to consider as many steps as
+stable models in the world view.
+Consider the program:
+\begin{verbatim}
+{a}.
+b :- kb, not a.
+b :-         a.
+\end{verbatim}
+$W=[\{b\},\{a,b\}]$ is a G91-World view but 
+not an equilibrium world view
+(the atom $b$ in $\{b\}$ cannot be justified).
+%
+The temporal program has a trace with one step $\{a,b\}$.
+%
+Writing the corresponding temporal program in ASP we would have:
+\begin{verbatim}
+{a1}.
+b1 :- kb1, not a1.
+b1 :-          a1.
+kb1 :- b1.
+\end{verbatim}
+that has the stable model $\{a1,b1,kb1\}$.
+%
+A more general example would be:
+\begin{verbatim}
+{a(1..100)}.
+b :- kb, #false: a(X).
+b :-             a(X).
+\end{verbatim}
+where to show that b is not known we would need 
+to consider $2^{100}$ steps.
+
+\item 
+\textbf{Hypothesis 4 (One formalization of Jorge's idea).}
+A G91-world view $W=\{w_1, \ldots, w_n\}$ is founded iff
+$\langle w_1, \ldots, w_n \rangle$ is a 
+finite trace of the temporal logic program of Jorge's idea.
+\end{itemize}
+
+
+\end{document}
+
+
