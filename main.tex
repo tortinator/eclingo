@@ -170,7 +170,7 @@ In fact, all practical scenarios in the literature involving epistemic problems 
 
 In this paper, we present the \eclingo{} system, a solver for epistemic specifications under the G91 semantics.
 %
-The tool is built on top of the ASP solver {\tt clingo}~\cite{gekakaosscwa16a}
+The tool is built on top of the ASP solver \clingo~\cite{gekakaosscwa16a}
 making use of its features for syntactic extensions and multi-shot solving \cite{gekakasc17a}.
 %
 The basic strategy applied by \eclingo{} is a guess-and-check method where the truth value of subjective literals is first guessed with choice rules for auxiliary atoms and, in a second step, the obtained values for those atoms is checked using the sets of cautious and brave consequences of the program.
@@ -266,9 +266,9 @@ then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.4} has a uniqu
 \section{Using \texttt{eclingo}}
 \label{sec:input}
 
-As said before, \eclingo{} is based on {\tt clingo}'s facilities (through the Python API) for syntax extension and multi-shot solving.
+As said before, \eclingo{} is based on \clingo's facilities (through the Python API) for syntax extension and multi-shot solving.
 %
-As a result, \eclingo{} input language is just a minor extension of the input language accepted by {\tt gringo}~\cite{gekaosscth09a}, the grounder used by {\tt clingo}. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
+As a result, \eclingo{} input language is just a minor extension of the input language accepted by {\tt gringo}~\cite{gekaosscth09a}, the grounder used by \clingo. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
 
 The structure of a clingo rule is as follows:
 \begin{align*}
@@ -396,7 +396,7 @@ Then, the choice rule added for each auxiliary atom is just:
 The main idea behind the parsing process was to generate an auxiliary representation of the problem that can be used as an input for \clingo. Thus, when asking \clingo to solve this program using its multi-shot feature, it will go returning answer sets in terms of these auxiliary literals. Each configuration of subjective atom values represents a particular world view. Filtering objective literals from \clingo's output, and removing duplicates, we can use these answer sets as a bounded pool of potential solutions.
 
 %\subsection{Solving an epistemic logic program} \label{subsec:solve}
-\texttt{eclingo} solves epistemic logic programs following a guess and check strategy. This approach splits the solving process into two phases. In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding clingo with the auxiliary program and filtering the output answer sets. The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
+\eclingo\ solves epistemic logic programs following a guess and check strategy. This approach splits the solving process into two phases. In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding clingo with the auxiliary program and filtering the output answer sets. The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
 
 In the check phase, \eclingo{} verifies these candidates and filters the subset of false candidates.
 This phase verifies a set of 4 properties over each candidate. However, the check cannot be done directly over the literals. Instead, the check is executed over the answer sets of a logic program, created by replacing each auxiliary subjective literal of the auxiliary program with the truth value it takes in the candidate. In this way, after the replacement, \eclingo{} invokes \clingo again with this replaced logic program and verifies the set of properties over the output answer sets. The aforementioned properties are the following:
@@ -579,7 +579,7 @@ The tool \wviews\footnote{\url{https://github.com/galactose/\wviews}} is a solve
 
 %the need of the independent and non-integrated tool {\tt ELPS} can be seen as a disadvantage, diusing two different, not fully integrated programs for solving the epistemic logic program can be seen as a difficulty in its usage. Also, while this epistemic logic program represents subjective literals in a very comfortable way, the way it is split makes the representation of the rest of the program a hard task.
 
-Regarding the efficiency comparison, we have executed the three tools (i.e., \wviews, \EPASP{} and \texttt{eclingo}) on scenarios for two well-known problems in the literature: the eligibility problem (Example~\ref{ex:college}) and a variant of the Yale Shooting problem with incomplete knowledge about the initial state, looking for a conformant plan (that is, a plan that always succeeds, regardless of the initial state).
+Regarding the efficiency comparison, we have executed the three tools (i.e., \wviews, \EPASP{} and \eclingo) on scenarios for two well-known problems in the literature: the eligibility problem (Example~\ref{ex:college}) and a variant of the Yale Shooting problem with incomplete knowledge about the initial state, looking for a conformant plan (that is, a plan that always succeeds, regardless of the initial state).
 %
 Since the three tools have different dependencies, their installation in the same machine was unfeasible. For this reason, a set of \texttt{Amazon Web Services}~\footnote{\url{https://aws.amazon.com/}} virtual machines have been used. These virtual machines are instances of type \texttt{t2.micro}, whose technical specifications are:
 
@@ -688,7 +688,7 @@ This is because when we perform the grounding process independently, we obtain a
 
 We have presented \eclingo{}, a solver for epistemic specifications under~\cite{gelfond91a} semantics, G91.
 %
-The solver is programmed on top of {\tt clingo}, using its syntactic extension and multi-shot solving features.
+The solver is programmed on top of \clingo, using its syntactic extension and multi-shot solving features.
 %
 We have tested the execution of \eclingo{} and compared to other two epistemic solvers in a pair of domains from the literature.
 %
