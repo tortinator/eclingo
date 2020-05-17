@@ -607,14 +607,15 @@ test := true; \\
 \label{sec:eval}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-In this section we compare \eclingo{} with other two epistemic solvers, \wviews~\cite{Kelly07} and \EPASP~\cite{SLKL17}, both with respect to usability and efficiency.
+In this section,
+we compare \eclingo{} with two other epistemic solvers, \wviews~\cite{Kelly07} and \EPASP~\cite{SLKL17}, both with respect to usability and efficiency.
 
 %\subsection{Input Language}
 %\subsubsection{\wviews}
-The tool \wviews\footnote{\url{https://github.com/galactose/\wviews}} is a solver for epistemic specifications under G91 semantics developed by Michael Kelly for its Honour's Thesis. It is built upon the ASP system {\tt DLV} and allows the inclusion of subjective literals under a pretty simple notation. However, this simplicity is eclipsed by the limitations in the rest of its grammar. For instance, \wviews{} has no advanced options for specifying constants, show directives, aggregates or conditional literals, among others. Besides, the parser is very sensitive to minor changes in a same problem representation. In fact, we were not able to execute \wviews{} on programs with predicates with more than one argument, something that forced us to test the benchmarks for planning on ground programs.
+The tool \wviews\footnote{\url{https://github.com/galactose/wviews}} is a solver for epistemic specifications under G91 semantics developed by Michael Kelly for its Honour's Thesis. It is built upon the ASP system {\tt DLV} and allows the inclusion of subjective literals under a pretty simple notation. However, this simplicity is eclipsed by the limitations in the rest of its grammar. For instance, \wviews{} has no advanced options for specifying constants, show directives, aggregates or conditional literals, among others. Besides, the parser is very sensitive to minor changes in a same problem representation. In fact, we were not able to execute \wviews{} on programs with predicates with more than one argument, something that forced us to test the benchmarks for planning on ground programs.
 
 %\subsubsection{\EPASP}
-\EPASP\footnote{\url{https://github.com/tiep/EP-ASP}}~\cite{SLKL17} is another solver for epistemic specifications that can compute world views under two semantics: \cite{kawabagezh15} (K15)  (also computed by \eclingo{}) and~\cite{sheeit17a}. Just like \eclingo{}, it is built upon the ASP system \clingo, but under its 4.5.0 version. \EPASP{} input programs are generated using another independent and non-integrated tool, {\tt ELPS}~\cite{BK14}, that provides a method to translate an epistemic logic program with sort definitions into a standard ASP program. The grammar that defines a correct input program for {\tt ELPS} is, therefore, substantially different from the one used by \clingo{}. It considers four types of statements: directives, sort definitions, predicate declarations and rules. Directives can be either a constant definition or a {\tt maxint} declaration, so the range for numerical expressions is predefined, unlike in \clingo{}.
+\EPASP\footnote{\url{https://github.com/tiep/EP-ASP}}~\cite{SLKL17} is another solver for epistemic specifications that can compute world views under two semantics: \cite{kawabagezh15} (K15)  (also computed by \eclingo{}) and~\cite{sheeit17a}. Just like \eclingo{}, it is built upon the ASP system \clingo, but using version 4.5.0. \EPASP{} input programs are generated using another independent and non-integrated tool, {\tt ELPS}~\cite{BK14}, that provides a method to translate an epistemic logic program with sort definitions into a standard ASP program. The grammar that defines a correct input program for {\tt ELPS} is, therefore, substantially different from the one used by \clingo{}. It considers four types of statements: directives, sort definitions, predicate declarations and rules. Directives can be either a constant definition or a {\tt maxint} declaration, so the range for numerical expressions is predefined, unlike in \clingo{}.
 %Regarding the rest of the program, subjective literals can be included in the body of the rules under a pretty simple syntax.
 
 %the need of the independent and non-integrated tool {\tt ELPS} can be seen as a disadvantage, diusing two different, not fully integrated programs for solving the epistemic logic program can be seen as a difficulty in its usage. Also, while this epistemic logic program represents subjective literals in a very comfortable way, the way it is split makes the representation of the rest of the program a hard task.
@@ -633,14 +634,16 @@ The chosen operative system is an Ubuntu Server 18.04 LTS, given as an AMI \foot
 %
 %The selected problems for the benchmarking are the Scholarship Eligibility Problem, since it is the first problem upon epistemic specifications were proposed, and the epistemic version of the Yale Shooting Problem, to see how the tools face a harder problem as conformant planning is.
 
-Encodings can be downloaded from the git repository. It is important to note that \EPASP{} encodings are already preprocessed by {\tt ELPS}, so our execution times do not consider this translation step.
+Encodings can be downloaded from the git repository.
+It is important to note that \EPASP{} encodings are already preprocessed by {\tt ELPS}, so our execution times do not consider this translation step.
 
 Table \ref{tab:eligible} shows best execution time for 10 runs of the Scholarship Eligibility Problem by \wviews{} under G91 semantics, \EPASP{} under K15 semantics and \eclingo{} under both G91 and K15 semantics, to make a fair comparison. In this problem, the tools were fed with 25 scenarios denoted as eligibleXX were XX is the number of the instance and, at the same time, the number of students for the problem. As it can be seen, \wviews{} can only solve the first 7 scenarios (with a timeout of 2 minutes) and only performs better than \eclingo{} in the first one. The performance of \eclingo{} is more solid, solving all the instances with  homogeneous execution times between 0.045s and 0.065s. In the case of \EPASP{} using K15, the tool solves 16 scenarios and reaches the timeout for the 9 remaining ones. For the first 9 scenarios (with the exception of eligible06), \EPASP{} execution times are better, but very close to those thrown by \eclingo{}. However, in the examples from 10 to 16 the performance of \EPASP{} is clearly worse and, moreover, shows an unpredictable variability among the solved cases, from 0.088s in eligible16 to 52.69s for eligible12. \eclingo{} under K15 solves the 25 scenarios in a range of times from 0.046s to 0.073s, being eligible25 an exception with a time of 0.789s.
 
 \begin{table}[ht]
     \begin{tabular}{c|rr|rr}
-    \hline
-    & \texttt{\wviews{} G91} & \texttt{eclingo G91} & \texttt{\EPASP{} K15} & \texttt{eclingo K15} \\ \hline
+    \cline{1-5}
+    & \texttt{\wviews{} G91} & \texttt{eclingo G91} & \texttt{\EPASP{} K15} & \texttt{eclingo K15} \\
+    \cline{1-5}
     \texttt{eligible01} & {\bf 0.029}      & 0.045       & {\bf 0.027}      & 0.046       \\
     \texttt{eligible02} & 0.049      & {\bf 0.046}       & {\bf 0.028}      & 0.047       \\
     \texttt{eligible03} & 0.128      & {\bf 0.046}       & {\bf 0.028}      & 0.047       \\
@@ -665,7 +668,8 @@ Table \ref{tab:eligible} shows best execution time for 10 runs of the Scholarshi
     \texttt{eligible22} & -          & {\bf 0.058}       & -          & {\bf 0.068}       \\
     \texttt{eligible23} & -          & {\bf 0.059}       & -          & {\bf 0.070}       \\
     \texttt{eligible24} & -          & {\bf 0.060}       & -          & {\bf 0.073}       \\
-    \texttt{eligible25} & -          & {\bf 0.065}       & -          & {\bf 0.789}       \\ \hline
+    \texttt{eligible25} & -          & {\bf 0.065}       & -          & {\bf 0.789}       \\
+    \cline{1-5}
     \end{tabular}
 \caption{Eligibility Problem. Time in seconds: timeout fixed in 120s.}
 \label{tab:eligible}
@@ -676,8 +680,9 @@ Table \ref{tab:yale} shows best execution time for 10 runs of the epistemic vers
 As we can see in Table \ref{tab:yale}, \EPASP{} in planning mode performs slightly better than \eclingo{} in all the cases solved by both tools. However, \EPASP{} reaches the timeout in three scenarios for path length 10, while \eclingo{} solves all of them.
 \begin{table}[ht]
     \begin{tabular}{c|cc|c}
-    \hline
-           & \texttt{\EPASP{} K15, planning mode} & \texttt{eclingo G91} & Path length \\ \hline
+    \cline{1-4}
+           & \texttt{\EPASP{} K15, planning mode} & \texttt{eclingo G91} & Path length \\
+    \cline{1-4}
     \texttt{yale01} & {\bf 0.031}      & 0.053       & 1       \\
     \texttt{yale02} & {\bf 0.033}      & 0.054       & 2       \\
     \texttt{yale03} & {\bf 0.037}      & 0.056       & 3       \\
@@ -689,7 +694,8 @@ As we can see in Table \ref{tab:yale}, \EPASP{} in planning mode performs slight
     \texttt{yale10} & {\bf 0.098}      & 0.425       & 10      \\
     \texttt{yale11} & -          & {\bf 0.164}       & 10      \\
     \texttt{yale12} & {\bf 0.174}      & 1.567       & 10      \\
-    \texttt{yale13}* & -         & {\bf 0.695}      & 10      \\ \hline
+    \texttt{yale13}* & -         & {\bf 0.695}      & 10      \\
+    \cline{1-4}
     \end{tabular}
 \caption{Yale Shooting Problem. Time in seconds: timeout fixed in 120s. Problem yale13 is unsatisfiable.}
 \label{tab:yale}
@@ -702,8 +708,9 @@ This is because when we perform the grounding process independently, we obtain a
 
 \begin{table}[ht]
     \begin{tabular}{c|cc|c}
-        \hline
-                       & \texttt{\wviews{} G91} & \texttt{\eclingo{} G91} & Path length \\ \hline
+    \cline{1-4}
+                       & \texttt{\wviews{} G91} & \texttt{\eclingo{} G91} & Path length \\
+    \cline{1-4}
         \texttt{ground\_yale01} & 0.068      & {\bf 0.047}       & 1       \\
         \texttt{ground\_yale02} & 0.764      & {\bf 0.051}       & 2       \\
         \texttt{ground\_yale03} & 13.694     & {\bf 0.057}       & 3       \\
@@ -715,7 +722,8 @@ This is because when we perform the grounding process independently, we obtain a
         \texttt{ground\_yale10} & -          & {\bf 1.191}       & 10      \\
         \texttt{ground\_yale11} & -          & {\bf 1.201}       & 10      \\
         \texttt{ground\_yale12} & -          & {\bf 4.113}       & 10      \\
-        \texttt{ground\_yale13*} & -         & {\bf 3.067}      & 10      \\ \hline
+        \texttt{ground\_yale13*} & -         & {\bf 3.067}      & 10      \\
+    \cline{1-4}
         \end{tabular}
 \caption{Ground version of the Yale Shooting Problem. Time in seconds: timeout fixed in 120s. Problem yale13 is unsatisfiable.}
 \label{tab:ground_yale}
