@@ -377,7 +377,10 @@ For future work, we will include an option to expand one or all world views into
 \section{Basic solving process}
 \label{sec:impl}
 As we have seen, \eclingo's input language is a minor modification of the one for \clingo{}.
-To do so, the system uses \clingo{} API parsing methods for obtaining Abstract Syntax Tree (AST) representation in the form of a Python object. \eclingo{} uses these methods to translate the epistemic program into a standard ASP auxiliary one. The translating process is as follows:
+To do so, the system uses the  parsing methods of \clingo's API for obtaining the representation of an epistemic program as an abstract syntax tree (AST)
+in the form of a Python object.
+\eclingo{} uses these methods to translate the epistemic program into a standard ASP program with auxiliary variables.
+The translation process is as follows:
 \begin{itemize}
     \item Replace each subjective literal with an auxiliary objective literal.
     \item Remove {\tt \#show} statements from the program and store them for a later phase.
@@ -392,12 +395,12 @@ For G91 semantics, subjective literals are replaced using the following rules:
     \texttt{not\ \&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{not\ aux\_\emph{atom}} \label{r:g91_2} \\
     \texttt{\&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_not\_\emph{atom}} \\
     \texttt{not\ \&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_not\_\emph{atom}} \\
-    \texttt{\&k\{\ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_sn\_\emph{atom}} \\
-    \texttt{not\ \&k\{\ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_sn\_\emph{atom}} \\
-    \texttt{\&k\{\ $\sim$ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_not\_sn\_\emph{atom}} \\
-    \texttt{not\ \&k\{\ $\sim$ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_not\_sn\_\emph{atom}} \label{r:g91_8}
+    \texttt{\&k\{\ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_sn\_\emph{atom}} \\
+    \texttt{not\ \&k\{\ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_sn\_\emph{atom}} \\
+    \texttt{\&k\{\ $\sim$ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_not\_sn\_\emph{atom}} \\
+    \texttt{not\ \&k\{\ $\sim$ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_not\_sn\_\emph{atom}} \label{r:g91_8}
 \end{align}
-where \texttt{\emph{atom}} means an objective atom.
+where \texttt{\emph{atom}} is an objective atom.
 %
 Then, the choice rule added for each auxiliary atom is just:
 \begin{align*}
@@ -405,24 +408,41 @@ Then, the choice rule added for each auxiliary atom is just:
 \end{align*}
 
 
-The main idea behind the parsing process was to generate an auxiliary representation of the problem that can be used as an input for \clingo. Thus, when asking \clingo to solve this program using its multi-shot feature, it will go returning answer sets in terms of these auxiliary literals. Each configuration of subjective atom values represents a particular world view. Filtering objective literals from \clingo's output, and removing duplicates, we can use these answer sets as a bounded pool of potential solutions.
+The main idea behind the parsing process was to generate an auxiliary representation of the problem that can be used as an input for \clingo.
+Thus, when asking \clingo\ to solve this program using its multi-shot feature, it will go returning answer sets in terms of these auxiliary literals.
+Each configuration of subjective atom values represents a particular world view.
+Filtering objective literals from \clingo's output, and removing duplicates, we can use these answer sets as a bounded pool of potential solutions.
 
 %\subsection{Solving an epistemic logic program} \label{subsec:solve}
-\eclingo\ solves epistemic logic programs following a guess and check strategy. This approach splits the solving process into two phases. In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding \clingo\ with the auxiliary program and filtering the output answer sets. The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
+\eclingo\ solves epistemic logic programs following a guess and check strategy.
+This approach splits the solving process into two phases.
+In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding \clingo\ with the auxiliary program and filtering
+the output answer sets.
+The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
 
 In the check phase, \eclingo{} verifies these candidates and filters the subset of false candidates.
-This phase verifies a set of 4 properties over each candidate. However, the check cannot be done directly over the literals. Instead, the check is executed over the answer sets of a logic program, created by replacing each auxiliary subjective literal of the auxiliary program with the truth value it takes in the candidate. In this way, after the replacement, \eclingo{} invokes \clingo again with this replaced logic program and verifies the set of properties over the output answer sets. The aforementioned properties are the following:
+This phase verifies a set of 4 properties over each candidate.
+However, the check cannot be done directly over the literals.
+Instead, the check is executed over the answer sets of a logic program, created by replacing each auxiliary subjective literal of the auxiliary
+program with the truth value it takes in the candidate.
+In this way, after the replacement, \eclingo{} invokes \clingo\ again with this replaced logic program and verifies the set of properties over the
+output answer sets.
+The aforementioned properties are the following:
 \begin{enumerate}
     \item For each subjective literal of the form \texttt{\&k\{\emph{literal}\}}, \texttt{\emph{literal}} must be in every answer set.
 
     \item For each subjective literal of the form \texttt{not \&k\{\emph{literal}\}}, \texttt{\emph{literal}} must not be in every answer set.
 
-    \item For each subjective literal of the form \texttt{\&k\{$\sim$ \emph{literal}\}}, \texttt{\emph{literal}} must not be in any answer set.
+    \item For each subjective literal of the form \texttt{\&k\{$\sim$\emph{literal}\}}, \texttt{\emph{literal}} must not be in any answer set.
 
-    \item For each subjective literal of the form \texttt{not \&k\{$\sim$ \emph{literal}\}}, \texttt{\emph{literal}} must be in some answer set.
+    \item For each subjective literal of the form \texttt{not \&k\{$\sim$\emph{literal}\}}, \texttt{\emph{literal}} must be in some answer set.
 \end{enumerate}
 
-As it can be seen, verifying these properties involve reasoning over all the answer sets but, fortunately, this can be done in this case using \clingo{} modes for cautious and brave reasoning. These two modes are rely on basic set operations over the resulting answer sets: intersection and union, respectively. Thus, if we compute the cautious and the brave consequences of the replaced logic program, the aforementioned properties can be easily checked by translating them into:
+As it can be seen, verifying these properties involves reasoning over all the answer sets but, fortunately, this can be done in this case using
+\clingo{} modes for cautious and brave reasoning.
+These two modes rely on basic set operations over the resulting answer sets: intersection and union, respectively.
+Thus, if we compute the cautious and the brave consequences of the replaced logic program,
+the aforementioned properties can be easily checked by translating them into:
 \begin{enumerate}
     \item For each subjective literal of the form \texttt{\&k\{\emph{literal}\}}, \texttt{\emph{literal}} must be in the cautious consequences.
 
@@ -433,33 +453,35 @@ As it can be seen, verifying these properties involve reasoning over all the ans
     \item For each subjective literal of the form \texttt{not \&k\{\textapprox\ \emph{literal}\}}, \texttt{\emph{literal}} must be in in the brave consequences.
 \end{enumerate}
 
-Although \eclingo{} was proposed as a solver for epistemic specifications under G91 semantics, in its 1.0.0 version, it also supports \cite{kawabagezh15} (K15) semantics.
+Although \eclingo{} was proposed as a solver for epistemic specifications under G91 semantics, in its 1.0.0 version, it also supports
+the semantics proposed in~\cite{kawabagezh15} (K15).
 %
-Since both semantics are so similar, \eclingo{} can support both of them with a little modification in its parsing process. Thus, when an epistemic logic program is translated to an auxiliary one, a new replacing policy is used in K15 mode. This replacing policy is as follows:
+Since both semantics are so similar, \eclingo{} can support both of them with a little modification in its parsing process. Thus, when an epistemic logic program is translated to an auxiliary one, a new replacement policy is used in K15 mode. This replacing policy is as follows:
 \begin{align*}
     \texttt{\&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{aux\_\emph{atom},\ \emph{atom}} \\
     \texttt{not\ \&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{n\_aux\_\emph{atom}}\\
     \texttt{\&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{aux\_not\_\emph{atom},\ not\ atom} \\
     \texttt{not\ \&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{n\_aux\_not\_\emph{atom}} \\
-    \texttt{\&k\{\ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{aux\_sn\_\emph{atom},\ -atom} \\
-    \texttt{not\ \&k\{\ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{n\_aux\_sn\_\emph{atom}} \\
-    \texttt{\&k\{\ $\sim$ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{aux\_not\_sn\_\emph{atom},\ not\ -atom} \\
-    \texttt{not\ \&k\{\ $\sim$ {-}\emph{atom}\  \}}\ & \mapsto\ \texttt{n\_aux\_not\_sn\_\emph{atom}}
+    \texttt{\&k\{\ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{aux\_sn\_\emph{atom},\ -atom} \\
+    \texttt{not\ \&k\{\ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{n\_aux\_sn\_\emph{atom}} \\
+    \texttt{\&k\{\ $\sim$ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{aux\_not\_sn\_\emph{atom},\ not\ -atom} \\
+    \texttt{not\ \&k\{\ $\sim$ \sneg\emph{atom}\  \}}\ & \mapsto\ \texttt{n\_aux\_not\_sn\_\emph{atom}}
 \end{align*}
-where \texttt{\emph{atom}} means an objective atom, and atoms that begin with the \texttt{n\_aux} prefix are new auxiliary atoms.
+where \texttt{\emph{atom}} is an objective atom, and atoms that begin with the prefix \texttt{n\_aux} are new auxiliary atoms.
 %
-Additionally, for each new auxiliary atom we also include a couple of rules to the program that trigger its truth value. These rules are as follows:
+Additionally, for each new auxiliary atom, we also include a couple of rules to the program that trigger its truth value.
+These rules are as follows:
 \begin{align*}
-    \texttt{n\_aux\_\emph{atom}} \ &\ :-\ \texttt{not\ aux\_\emph{atom}.} \\
-    \texttt{n\_aux\_\emph{atom}} \ &\ :-\ \texttt{not\ \emph{atom}.} \\
-    \texttt{n\_aux\_not\_\emph{atom}} \ &\ :-\ \texttt{not\ aux\_not\_\emph{atom}.} \\
-    \texttt{n\_aux\_not\_\emph{atom}} \ &\ :-\ \texttt{not\ not\ \emph{atom}.} \\
-    \texttt{n\_aux\_sn\_\emph{atom}} \ &\ :-\ \texttt{not\ aux\_sn\_\emph{atom}.} \\
-    \texttt{n\_aux\_sn\_\emph{atom}} \ &\ :-\ \texttt{not\ {-}\emph{atom}.} \\
-    \texttt{n\_aux\_not\_sn\_\emph{atom}} \ &\ :-\ \texttt{not\ aux\_not\_sn\_\emph{atom}.} \\
-    \texttt{n\_aux\_not\_sn\_\emph{atom}} \ &\ :-\ \texttt{not\ not\ {-}\emph{atom}.}
+    \texttt{n\_aux\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ aux\_\emph{atom}.} \\
+    \texttt{n\_aux\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ \emph{atom}.} \\
+    \texttt{n\_aux\_not\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ aux\_not\_\emph{atom}.} \\
+    \texttt{n\_aux\_not\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ not\ \emph{atom}.} \\
+    \texttt{n\_aux\_sn\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ aux\_sn\_\emph{atom}.} \\
+    \texttt{n\_aux\_sn\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ \sneg\emph{atom}.} \\
+    \texttt{n\_aux\_not\_sn\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ aux\_not\_sn\_\emph{atom}.} \\
+    \texttt{n\_aux\_not\_sn\_\emph{atom}}  &\text{ \texttt{:-} } \texttt{not\ not\ \sneg\emph{atom}.}
 \end{align*}
-where \texttt{\emph{atom}} means an objective atom and rules are selected by the auxiliary atom in its head.
+where \texttt{\emph{atom}} is an objective atom and rules are selected by the auxiliary atom in its head.
 %
 Since there is no need to modify any other part of \eclingo{}, the rest of the implementation is shared by both semantics.
 
@@ -508,21 +530,21 @@ that may allow us concluding more information once the subjective atoms are repl
 These rules are built taking advantage of the parsing process, where the rules are translated to its auxiliary representation. In this way, every time a rule is translated (i.e., the rule has a subjective literal in the body), a completion auxiliary rule is added to the program. This completion auxiliary rule is a copy of the auxiliary one, where objective literals are replaced under the following policy:
 \begin{align*}
     \texttt{\emph{atom}} & \mapsto \texttt{aux2\_\emph{atom}} \\
-    \texttt{{-}\emph{atom}} & \mapsto \texttt{aux2\_sn\_\emph{atom}} \\
+    \texttt{\sneg\emph{atom}} & \mapsto \texttt{aux2\_sn\_\emph{atom}} \\
     \texttt{not \emph{atom}} & \mapsto \texttt{aux2\_not\_\emph{atom}} \\
-    \texttt{not {-}\emph{atom}} & \mapsto \texttt{aux2\_not\_sn\_\emph{atom}}
+    \texttt{not \sneg\emph{atom}} & \mapsto \texttt{aux2\_not\_sn\_\emph{atom}}
 \end{align*}
 where \texttt{\emph{atom}} is an objective atom. Note that the subjective literals remain the same. For example, \eqref{f:rule1} in \eclingo{} would be the rule:
 \begin{align*}
-    \texttt{p\ :-\ q,\ not\ r,\ \&k\{s\}.}
+    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ \&k\{s\}.}
 \end{align*}
 which we had previously translated as
 \begin{align*}
-    \texttt{p\ :-\ q,\ not\ r,\ aux\_s.}
+    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ aux\_s.}
 \end{align*}
 is now completed with the additional rule:
 \begin{align*}
-    \texttt{aux2\_p\ :-\ aux2\_q,\ aux2\_not\_r,\ aux\_s.}
+    \texttt{aux2\_p\text{ \texttt{:-}} aux2\_q,\ aux2\_not\_r,\ aux\_s.}
 \end{align*}
 that corresponds to \eqref{f:rule1b} but for auxiliary atoms.
 
