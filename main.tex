@@ -157,7 +157,7 @@ whose G91 world views are $\{\emptyset\}$ (as expected) but also $\{\{p\}\}$, wh
 %
 Other semantics~\cite{kawabagezh15,faheir15a,sheeit17a} managed to deal with this and other examples but fail to satisfy the elementary splitting property presented in~\cite{cafafa19a}, something that was preserved by the original G91.
 %
-Moreover, a first formalisation of foundedness was provided in~\cite{cafafa19b} and all the previously existing semantics violated that condition, except the new approach presented in that paper, FAAEL, which corresponds to a strengthening of G91 plus an extra foundedness checking.
+Moreover, a first formalisation of foundedness was provided in~\cite{cafafa19b} and all the previously existing semantics violated that condition, except the new approach presented in that paper, FAAEL, which corresponds to a strengthening of G91 plus an extra foundedness check.
 %
 Thus, to the best of our knowledge, FAAEL is the only semantics satisfying both splitting and foundedness up to date.
 
@@ -165,20 +165,23 @@ There exist several implemented solvers for epistemic specifications -- a recent
 %
 Although there is no solver for FAAEL yet, the closest existing tools are those based on G91, since FAAEL and G91 coincide in all epistemic specifications whose subjective literals do not form positive cycles.
 %
-This suggests that a solver for FAAEL can be constructed by applying an extra founded checking on top of a G91 solver.
+This suggests that a solver for FAAEL can be constructed by applying an extra foundedness check on top of a G91 solver.
 %
 In fact, all practical scenarios in the literature involving epistemic problems can be represented without positive subjective cycles, so their computation in terms of G91 is sound with respect to FAAEL too.
 
 In this paper, we present the \eclingo{} system, a solver for epistemic specifications under the G91 semantics.
 %
-The tool is built on top of the ASP solver \clingo~\cite{gekakaosscwa16a}
-making use of its features for syntactic extensions and multi-shot solving \cite{gekakasc17a}.
+The tool is built on top of the ASP solver \clingo~\cite{gekakasc17a}
+making use of its features for syntactic extensions and multi-shot solving.
 %
-The basic strategy applied by \eclingo{} is a guess-and-check method where the truth value of subjective literals is first guessed with choice rules for auxiliary atoms and, in a second step, the obtained values for those atoms is checked using the sets of cautious and brave consequences of the program.
+The basic strategy applied by \eclingo{} is a guess-and-check method where the truth value of subjective literals is first guessed with choice rules for auxiliary atoms and, in a second step, the obtained values for those atoms are checked using the sets of cautious and brave consequences of the program.
 %
 This basic strategy has been improved with several optimisations.
 %
-We have made experiments on several scenarios for a pair of benchmark domains and compared to \wviews~\cite{Kelly07} (another solver for G91) and {\tt \EPASP}~\cite{SLKL17}, that computes a close semantics~\cite{kawabagezh15} also accepted by \eclingo{}, outperforming these tools in most cases.
+We have made experiments on several scenarios for a couple of benchmark domains and compared \eclingo\ to
+\wviews~\cite{Kelly07} (another solver for G91) and \EPASP~\cite{SLKL17},
+which computes a close semantics~\cite{kawabagezh15} also accepted by \eclingo{},
+and show that \eclingo\ outperforms these tools in most cases.
 
 %\red The rest of the paper is organised as follows. \dots \black
 
@@ -193,15 +196,15 @@ We assume some familiarity with the answer set semantics~\cite{GL91} for logic p
 Given a set of atoms $\At$, an \emph{objective literal} is either an atom, a truth constant\footnote{For a simpler description of program transformations, we allow truth constants where $\top$ denotes true and $\bot$ denotes false. These constants can be easily removed.}, that is \mbox{$a \in \At \cup \{\top,\bot\}$}, or an atom preceded by one or two occurrences of default negation,
 \mbox{$\Not a$}.
 %
-We assume that, for each atom $a \in \At$, we have another atom `$\sneg a$' $ \in \At$ that stands for the explicit negation of $a$.
+We assume that, for each atom $a \in \At$, we have another atom `$\sneg a$' in \At\ that stands for the explicit negation of $a$.
 %
-As usual, the answer sets of a standard program $\Pi$, denoted as $\AS[\Pi]$, are those stable models of $\Pi$ that do not contain any pair $\{a, -a\}$.
+As usual, the answer sets of a standard program $\Pi$, denoted as $\AS[\Pi]$, are those stable models of $\Pi$ that do not contain both $a$ and $\sneg a$.
 %
 The syntax of epistemic specifications is an extension of ASP.
 %
 An expression of the form $\K l$, $\M l$ with $l$ an objective literal, receives the name of \emph{subjective atom}.
 %
-A \emph{subjective literal} can be a subjective atom $A$ or its default nefation $\Not A$.
+A \emph{subjective literal} can be a subjective atom $A$ or its default negation $\Not A$.
 %
 A \emph{rule} is an expression of the form:
 \begin{gather}
