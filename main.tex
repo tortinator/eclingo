@@ -40,7 +40,7 @@
 \let\sneg\relax
 \newcommand{\sneg}{\ensuremath{\text{-}}}
 \def\eclingo{{\tt eclingo}}
-\def\\wviews{{\tt \wviews}}
+\def\wviews{{\tt \wviews}}
 
 \def\sM{\mathcal{M}}
 \def\Atoms{\mathit{Atoms}}
@@ -193,8 +193,10 @@ and show that \eclingo\ outperforms these tools in most cases.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 We assume some familiarity with the answer set semantics~\cite{GL91} for logic programs.
 %
-Given a set of atoms $\At$, an \emph{objective literal} is either an atom, a truth constant\footnote{For a simpler description of program transformations, we allow truth constants where $\top$ denotes true and $\bot$ denotes false. These constants can be easily removed.}, that is \mbox{$a \in \At \cup \{\top,\bot\}$}, or an atom preceded by one or two occurrences of default negation,
-\mbox{$\Not a$}.
+Given a set of atoms $\At$, an \emph{objective literal} is either an atom, a truth constant%
+\footnote{For a simpler description of program transformations, we allow truth constants where $\top$ denotes true and $\bot$ denotes false.
+  These constants can be easily removed.},
+that is, \mbox{$a \in \At \cup \{\top,\bot\}$}, or an atom preceded by one or two occurrences of default negation, $\Not$.
 %
 We assume that, for each atom $a \in \At$, we have another atom `$\sneg a$' in \At\ that stands for the explicit negation of $a$.
 %
@@ -202,7 +204,7 @@ As usual, the answer sets of a standard program $\Pi$, denoted as $\AS[\Pi]$, ar
 %
 The syntax of epistemic specifications is an extension of ASP.
 %
-An expression of the form $\K l$, $\M l$ with $l$ an objective literal, receives the name of \emph{subjective atom}.
+An expression of the form $\K l$, $\M l$ with $l$ being an objective literal, is called \emph{subjective atom}.
 %
 A \emph{subjective literal} can be a subjective atom $A$ or its default negation $\Not A$.
 %
@@ -211,12 +213,13 @@ A \emph{rule} is an expression of the form:
 a_1 \vee \dots \vee a_n \leftarrow L_1, \dots, L_m
 	\label{eq:rule}
 \end{gather}
-with $n\geq 0$ and $m\geq 0$, where each $a_i \in \At$ is an atom and each $L_j$ a literal of any kind, either objective or subjective.
+with $n\geq 0$ and $m\geq 0$, where each $a_i \in \At$ is an atom and each $L_j$ a literal, either objective or subjective.
 %
 An \emph{epistemic program} (or epistemic specification) is a set of rules.
 
 \begin{definition}[Subjective reduct]
-The \emph{subjective reduct} of an epistemic program $\Pi$ with respect to a set of propositional interpretations~$\wv$, written $\Pi^\wv$, is obtained by replacing each subjective literal $L$ by: $\top$ if $\wv \models L$; or by $\bot$ otherwise.\qed
+The \emph{subjective reduct} of an epistemic program $\Pi$ with respect to a set of propositional interpretations~$\wv$, written $\Pi^\wv$, is
+obtained by replacing each subjective literal $L$ by $\top$ if $\wv \models L$ and by $\bot$ otherwise.\qed
 \end{definition}
 
 Note that the subjective reduct of an epistemic program does not contain subjective literals, and so, it is a standard logic program.
@@ -225,13 +228,14 @@ Therefore, we can collect its answer sets $\AS[\Pi^\wv]$.
 %
 We say that a set of propositional interpretations $\wv$ is a \emph{world view} of an epistemic program $\Pi$ if $\wv=\AS[\Pi^\wv]$.
 %
-Originally, \cite{gelfond91a} allowed empty world views $W=\emptyset$ when the program has no answer sets, rather than leaving the program without world views.
+Originally, \cite{gelfond91a} allowed for empty world views $W=\emptyset$ when the program has no answer sets, rather than leaving the program without world views.
 %
 Since this feature is not really essential, we exclusively refer to non-empty world views in this paper.
 %
-The complexity for deciding whether an epistemic program has a world view is $\Sigma^{P}_{3}$~\cite{truszczynski11b}, that is, one level higher in the polynomial hierarchy than  (disjunctive) ASP complexity $\Sigma^{P}_{2}$.
+The complexity for deciding whether an epistemic program has a world view is $\Sigma^{P}_{3}$~\cite{truszczynski11b}, that is,
+one level higher in the polynomial hierarchy than the complexity of (disjunctive) ASP, which is $\Sigma^{P}_{2}$.
 
-We conclude this section introducing a well-known example introduced in~\cite{gelfond91a}.
+We conclude this section by introducing a well-known example introduced in~\cite{gelfond91a}.
 
 \begin{example}\label{ex:college}
 A given college uses the following set of rules to decide whether a student $X$ is eligible for a scholarship:
