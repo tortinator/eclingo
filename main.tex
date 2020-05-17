@@ -488,12 +488,12 @@ Since there is no need to modify any other part of \eclingo{}, the rest of the i
 
 \section{Optimising the solving process}
 \label{sec:optim}
-Several optimisations have been implemented on top of the basic solving process presented before.
+Several optimisations have been implemented on top of the basic solving process presented above.
 %The direct implementation of the solving method presented before is a supposes a naive approach to solve epistemic logic programs. As we already said, \eclingo{} pretends to meet a high level of efficiency. For this purpose, we propose a set of optimizations or heuristics for this method.
 %
 A first optimisation is the addition of \emph{consistency constraints}.
 %
-Notice that, once a subjective atom {\tt \&k\{$lit$\}} is are replaced by an standard auxiliary atoms $aux$, the relation to the original literal is lost.
+Notice that, once a subjective atom {\tt \&k\{$lit$\}} is replaced by an standard auxiliary atom $\mathit{aux}$, the relation to the original literal is lost.
 %
 Thus, the guess may produce inconsistent combinations like, for instance, an answer set containing:
 \begin{align*}
@@ -514,10 +514,13 @@ This problem can be avoided by adding, to the program we use for the guess, the 
 where \texttt{\emph{literal}} is the objective literal that the subjective literal refers to.
 %As we can see, rule \eqref{r:1} means that if a literal has to be true in every answer set it also has to be in this one itself. In the same way, rule \ref{r:2} means that if a literal has to be false in every answer set it also has to be in this one itself.
 %
-This situation improves the efficiency of \eclingo{} in those cases that a world view is only proposed by inconsistent answer sets. We can also agree that these constraints can also help in the guess phase since the set of answer sets produced by this invocation to \clingo tends to be smaller.
+This situation improves the efficiency of \eclingo{} whenever a world view is only proposed by inconsistent answer sets.
+We can also agree that these constraints can help in the guess phase since the set of answer sets produced by this invocation to \clingo\ tends to be smaller.
 
 %\subsubsection{Completion}
-Another optimization approach that \eclingo{} performs consists in extending the auxiliary logic program with a new set of auxiliary rules, which we will call \emph{completion} auxiliary rules. This set of rules tries to resolve indirect dependencies between subjective literals.
+Another optimization that \eclingo{} performs consists in extending the auxiliary logic program with a new set of auxiliary rules,
+which we call auxiliary \emph{completion} rules.
+This set of rules tries to resolve indirect dependencies between subjective literals.
 The idea of this translation is that, when we have the program rule:
 \begin{eqnarray}
 p \leftarrow q, \Not \ r, \K s.\label{f:rule1}
@@ -526,8 +529,10 @@ we can safely add the rule
 \begin{eqnarray}
 \K p \leftarrow \K q, \K \Not \ r, \K s. \label{f:rule1b}
 \end{eqnarray}
-that may allow us concluding more information once the subjective atoms are replaced by auxiliary ones.
-These rules are built taking advantage of the parsing process, where the rules are translated to its auxiliary representation. In this way, every time a rule is translated (i.e., the rule has a subjective literal in the body), a completion auxiliary rule is added to the program. This completion auxiliary rule is a copy of the auxiliary one, where objective literals are replaced under the following policy:
+that may allow for concluding more information once the subjective atoms are replaced by auxiliary ones.
+These rules are built taking advantage of the parsing process, where the rules are translated to its auxiliary representation. In this way, every time
+a rule is translated (i.e., the rule has a subjective literal in the body), an auxiliary completion rule is added to the program.
+This auxiliary completion rule is a copy of the auxiliary one, where objective literals are replaced under the following policy:
 \begin{align*}
     \texttt{\emph{atom}} & \mapsto \texttt{aux2\_\emph{atom}} \\
     \texttt{\sneg\emph{atom}} & \mapsto \texttt{aux2\_sn\_\emph{atom}} \\
@@ -549,7 +554,7 @@ is now completed with the additional rule:
 that corresponds to \eqref{f:rule1b} but for auxiliary atoms.
 
 %\subsubsection{Well-Founded Model}
-Another optimisation we have also implemented is based on the iterative computation of the well-founded model of the auxiliary guess program.
+Another optimisation is based on the iterative computation of the well-founded model of the auxiliary guess program.
 %semantics is a well-known theory for negation as failure. Roughly, computing the well-founded model of a logic programming consists of partitioning the set of ground atoms into three sets that define its truth value: true, false, and unknown. This partitioning is performed by focusing on the structure of the rules. In this way, an atom is true if it appears alone in the head of a rule and that rule has no body (i.e., it is a fact). Similarly, an atom that does not appear in the head of any rule is considered false, since it is no way to derive it. Finally, the rest of the atoms (i.e., those that cannot be stated as true or false) are categorized as unknown.
 %
 %The proper definition of the well-founded model of a logic program allows to state some relations between the set of stable models of the logic program and the well-founded model itself. For example:
@@ -567,7 +572,8 @@ Another optimisation we have also implemented is based on the iterative computat
 %\begin{theorem}
 %The subjective atom K \textapprox p holds for every p false in the well-founded model of a logic program.
 %\end{theorem}
-If, instead of computing the answer sets of the program, we just use \gringo\ to obtain its well-founded model (WFM), we will get a good estimate of regular atoms that are always true (resp. always false) in all the answer sets of the program.
+If, instead of computing the answer sets of the program, we just use \gringo\ to obtain its well-founded model (WFM),
+we get a good estimate of regular atoms that are always true (resp.\ always false) in all the answer sets of the program.
 In particular, if an atom $p$ is true in the well-founded model, then $\K p$ will hold and we can safely add the corresponding auxiliary atom {\tt aux\_p}.
 The same happens if atom $p$ is false in the well-founded model: we conclude $\K \Not \, p$ and add the auxiliary atom {\tt aux\_not\_p}.
 %
@@ -615,7 +621,7 @@ The tool \wviews\footnote{\url{https://github.com/galactose/\wviews}} is a solve
 
 Regarding the efficiency comparison, we have executed the three tools (i.e., \wviews, \EPASP{} and \eclingo) on scenarios for two well-known problems in the literature: the eligibility problem (Example~\ref{ex:college}) and a variant of the Yale Shooting problem with incomplete knowledge about the initial state, looking for a conformant plan (that is, a plan that always succeeds, regardless of the initial state).
 %
-Since the three tools have different dependencies, their installation in the same machine was unfeasible. For this reason, a set of \texttt{Amazon Web Services}~\footnote{\url{https://aws.amazon.com/}} virtual machines have been used. These virtual machines are instances of type \texttt{t2.micro}, whose technical specifications are:
+Since the three tools have different dependencies, their installation in the same machine was infeasible. For this reason, a set of \texttt{Amazon Web Services}~\footnote{\url{https://aws.amazon.com/}} virtual machines have been used. These virtual machines are instances of type \texttt{t2.micro}, whose technical specifications are:
 
 \begin{itemize}
 \item \textbf{vCPUs:} 1
