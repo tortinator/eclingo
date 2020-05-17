@@ -274,23 +274,26 @@ then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.4} has a uniqu
 \section{Using \texttt{eclingo}}
 \label{sec:input}
 
-As said before, \eclingo{} is based on \clingo's facilities (through the Python API) for syntax extension and multi-shot solving.
+As said before, \eclingo{} is based on \clingo's facilities (through its Python API) for syntax extension and multi-shot solving.
 %
-As a result, \eclingo{} input language is just a minor extension of the input language accepted by \gringo~\cite{gekaosscth09a}, the grounder used by \clingo. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
+As a result, \eclingo's input language is just a minor extension of the input language accepted by \gringo~\cite{gekaosscth09a},
+the grounder used by \clingo.
+In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
 
 The structure of a \clingo\ rule is as follows:
 \begin{align*}
-    H_1,\dots,H_m \ \mathtt{:\!-} \ B_1,\ \dots ,\ B_n.
+    H_1,\dots,H_m  \text{ \texttt{:-} }  B_1,\dots,B_n.
 \end{align*}
-where the head is formed by $H_i$ \clingo{} literals (commas in the head represent a disjunction) and the body consists of elements $B_i$ that can be \clingo{} literals or subjective literals.
+where the head is formed by \clingo\ literals $H_i$ (commas in the head represent a disjunction) and
+the body consists of elements $B_i$ that can be \clingo{} literals or subjective literals.
 %
 The notation for subjective literals in \eclingo{} is as follows.
 %
-Any construction $\K l$ is replaced {\tt \&k\{$l$\}} where $l$ is a regular, objective literal, that is, it may combine an atom with default or explicit negation.
+An expression $\K l$ is represented as a \clingo\ theory atom {\tt \&k\{$l$\}} where $l$ is a regular, objective literal, that is, it may combine an atom with default or explicit negation.
 %
 The only particularity is that default negation inside a {\tt \&k} operator must be represented as $\sim$ (this limitation will be changed in the future).
 %
-For instance, the subjective literal $\K \Not \, -p$ would be represented in \eclingo{} as \mbox{\tt \&k\{$\sim$ -p\}}.
+For instance, the subjective literal $\K \Not\, \sneg p$ is currently represented in \eclingo{} as \mbox{\tt \&k\{$\sim$\sneg p\}}.
 %
 Operator $\M$ is not directly supported by now, although any literal of the form $\M l$ can be represented as {\tt not \&k\{$\sim l$\}}.
 
@@ -320,7 +323,8 @@ As we can see, \eclingo{} obtains the world views of an epistemic program but, f
 %
 This is actually enough to determine the world view, whose answer sets can be obtained once all the subjective atoms are replaced by their truth values.
 %
-AS happens with regular atoms in \clingo{}, the input language of  \eclingo{} provides a {\tt \#show} directive to select those subjective atoms that we want to be displayed in each world view.
+As with regular atoms in \clingo,
+the input language of  \eclingo{} provides a {\tt \#show} directive to select those subjective atoms that we want to be displayed in each world view.
 %
 The syntax for this directive is the same as in \clingo{}
 \begin{align*}
@@ -335,7 +339,7 @@ For instance, if we add the line
 \end{align*}
 to our previous example, the information for the second world view would just be empty, since we assume we only want to display subjective literals for atom {\tt p}.
 
-As an illustration, the program \eqref{ex:college.1}-\eqref{ex:college.4} for Example~\ref{ex:college} is represented in \eclingo{} as:
+As an example, the program consisting of \eqref{ex:college.1}-\eqref{ex:college.4} from Example~\ref{ex:college} is represented in \eclingo{} as:
 \begin{Verbatim}[frame=single]
 eligible(X) :- high(X).
 eligible(X) :- minority(X), fair(X).
@@ -372,7 +376,7 @@ For future work, we will include an option to expand one or all world views into
 
 \section{Basic solving process}
 \label{sec:impl}
-As we have seen, \eclingo{} input language is a minor modification of the one for \clingo{}.
+As we have seen, \eclingo's input language is a minor modification of the one for \clingo{}.
 To do so, the system uses \clingo{} API parsing methods for obtaining Abstract Syntax Tree (AST) representation in the form of a Python object. \eclingo{} uses these methods to translate the epistemic program into a standard ASP auxiliary one. The translating process is as follows:
 \begin{itemize}
     \item Replace each subjective literal with an auxiliary objective literal.
