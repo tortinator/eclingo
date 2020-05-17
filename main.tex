@@ -106,11 +106,15 @@
 \maketitle
 
 \begin{abstract}
-We describe \texttt{eclingo}, a solver for epistemic specifications under Gelfond 1991 semantics built upon the \texttt{clingo} Answer Set Programming system. The input language of \eclingo{} uses the syntax extension capabilities of \clingo{} to define subjective literals that, as usual in epistemic specifications, allow checking the truth of a regular literal in all or in some of the answer sets of a program.
-The \eclingo{} solving process follows a guess and check strategy so it first generates potential truth values for subjective literals and, in a second step, it checks the obtained result with respect to the cautious and brave consequences of the program.
-This process is implemented using the multi-shot feature of \clingo.
-We have also implemented some optimisations, aiming to reduce the search space and, therefore, increasing \eclingo{}'s efficiency in some scenarios. 
-Finally, we compare the efficiency of \texttt{eclingo} with two state-of-the-art solvers for epistemic specifications on a pair of benchmark scenarios and show that it generally outperforms their obtained results.
+We describe \eclingo, a solver for epistemic specifications under Gelfond 1991 semantics built upon the Answer Set Programming system \clingo.
+The input language of \eclingo\ uses the syntax extension capabilities of \clingo{} to define subjective literals that, as usual in
+epistemic specifications, allow for checking the truth of a regular literal in all or in some of the answer sets of a program.
+The \eclingo\ solving process follows a guess and check strategy.
+It first generates potential truth values for subjective literals and, in a second step, it checks the obtained result with respect to the cautious and brave consequences of the program.
+This process is implemented using the multi-shot functionalities of \clingo.
+We have also implemented some optimisations, aiming at reducing the search space and, therefore, increasing \eclingo's efficiency in some scenarios.
+Finally, we compare the efficiency of \eclingo\ with two state-of-the-art solvers for epistemic specifications on a pair of benchmark scenarios
+and show that \eclingo\ generally outperforms their obtained results.
 \end{abstract}
 \begin{keywords}
 Answer Set Programming, Epistemic Specifications, Non-Monotonic Reasoning, Conformant Planning.
@@ -139,7 +143,7 @@ p \leftarrow \Not \, \K q \hspace{80pt}
 q \leftarrow \Not \, \K p  \label{f:epiloop}
 \end{eqnarray}
 %
-yields two world views $\{\{p\}\}$ and $\{\{q\}\}$, each one with a single stable model. 
+yields two world views $\{\{p\}\}$ and $\{\{q\}\}$, each one with a single stable model.
 %
 Deciding the intuitive world views of a cyclic specification has motivated a wide debate in the literature.
 %
@@ -218,7 +222,7 @@ We say that a set of propositional interpretations $\wv$ is a \emph{world view} 
 %
 Originally, \cite{gelfond91a} allowed empty world views $W=\emptyset$ when the program has no answer sets, rather than leaving the program without world views.
 %
-Since this feature is not really essential, we exclusively refer to non-empty world views in this paper. 
+Since this feature is not really essential, we exclusively refer to non-empty world views in this paper.
 %
 The complexity for deciding whether an epistemic program has a world view is $\Sigma^{P}_{3}$~\cite{truszczynski11b}, that is, one level higher in the polynomial hierarchy than  (disjunctive) ASP complexity $\Sigma^{P}_{2}$.
 
@@ -234,13 +238,13 @@ A given college uses the following set of rules to decide whether a student $X$ 
 Here, `$\sneg$' stands for strong negation and $\high(X)$ and $\fair(X)$ refer to the grades of student $X$.
 We want to encode the additional college criterion
 % \begin{quote}
-``\emph{The students whose eligibility is not determined by the college rules should be interviewed by the scholarship committee}'' 
+``\emph{The students whose eligibility is not determined by the college rules should be interviewed by the scholarship committee}''
 % \end{quote}
 as the epistemic rule:
 \begin{eqnarray}
 \begin{IEEEeqnarraybox}{rCl}
 \interview(X) &\leftarrow  &\Not \K \eligible(X),\,
-\Not \K \sneg \eligible(X) 
+\Not \K \sneg \eligible(X)
 \end{IEEEeqnarraybox}
 \label{ex:college.5}
 \end{eqnarray}
@@ -250,7 +254,7 @@ For instance, if the only available information for some student $mike$ is the d
 \begin{gather}
 \fair(mike) \vee \high(mike) \label{ex:college.4}
 \end{gather}
-then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.4} has a unique world view whose answer sets are 
+then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.4} has a unique world view whose answer sets are
 \begin{eqnarray}
 &\{\fair(mike),\interview(mike)\}& \label{f:sm1}\\
 &\{\high(mike), \eligible(mike),\interview(mike)\} &\label{f:sm2}
@@ -271,9 +275,9 @@ The structure of a clingo rule is as follows:
 \end{align*}
 where the head is formed by $H_i$ \clingo{} literals (commas in the head represent a disjunction) and the body consists of elements $B_i$ that can be \clingo{} literals or subjective literals.
 %
-The notation for subjective literals in \eclingo{} is as follows. 
+The notation for subjective literals in \eclingo{} is as follows.
 %
-Any construction $\K l$ is replaced {\tt \&k\{$l$\}} where $l$ is a regular, objective literal, that is, it may combine an atom with default or explicit negation. 
+Any construction $\K l$ is replaced {\tt \&k\{$l$\}} where $l$ is a regular, objective literal, that is, it may combine an atom with default or explicit negation.
 %
 The only particularity is that default negation inside a {\tt \&k} operator must be represented as $\sim$ (this limitation will be changed in the future).
 %
@@ -371,7 +375,7 @@ To do so, the system uses \clingo{} API parsing methods for obtaining Abstract S
 
 For G91 semantics, subjective literals are replaced using the following rules:
 \begin{align}
-    \texttt{\&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{not\ not\ aux\_\emph{atom}} \label{r:g91_1} \\ 
+    \texttt{\&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{not\ not\ aux\_\emph{atom}} \label{r:g91_1} \\
     \texttt{not\ \&k\{ \ \emph{atom} \ \}} \ & \mapsto\ \texttt{not\ aux\_\emph{atom}} \label{r:g91_2} \\
     \texttt{\&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{not\ not\ aux\_not\_\emph{atom}} \\
     \texttt{not\ \&k\{\ $\sim$ \emph{atom}\  \}}\ & \mapsto\ \texttt{not\ aux\_not\_\emph{atom}} \\
@@ -397,22 +401,22 @@ In the check phase, \eclingo{} verifies these candidates and filters the subset 
 This phase verifies a set of 4 properties over each candidate. However, the check cannot be done directly over the literals. Instead, the check is executed over the answer sets of a logic program, created by replacing each auxiliary subjective literal of the auxiliary program with the truth value it takes in the candidate. In this way, after the replacement, \eclingo{} invokes \clingo again with this replaced logic program and verifies the set of properties over the output answer sets. The aforementioned properties are the following:
 \begin{enumerate}
     \item For each subjective literal of the form \texttt{\&k\{\emph{literal}\}}, \texttt{\emph{literal}} must be in every answer set.
-    
+
     \item For each subjective literal of the form \texttt{not \&k\{\emph{literal}\}}, \texttt{\emph{literal}} must not be in every answer set.
-    
+
     \item For each subjective literal of the form \texttt{\&k\{$\sim$ \emph{literal}\}}, \texttt{\emph{literal}} must not be in any answer set.
-    
+
     \item For each subjective literal of the form \texttt{not \&k\{$\sim$ \emph{literal}\}}, \texttt{\emph{literal}} must be in some answer set.
 \end{enumerate}
 
 As it can be seen, verifying these properties involve reasoning over all the answer sets but, fortunately, this can be done in this case using \clingo{} modes for cautious and brave reasoning. These two modes are rely on basic set operations over the resulting answer sets: intersection and union, respectively. Thus, if we compute the cautious and the brave consequences of the replaced logic program, the aforementioned properties can be easily checked by translating them into:
 \begin{enumerate}
-    \item For each subjective literal of the form \texttt{\&k\{\emph{literal}\}}, \texttt{\emph{literal}} must be in the cautious consequences. 
-    
+    \item For each subjective literal of the form \texttt{\&k\{\emph{literal}\}}, \texttt{\emph{literal}} must be in the cautious consequences.
+
     \item For each subjective literal of the form \texttt{not \&k\{\emph{literal}\}}, \texttt{\emph{literal}} must not be in the cautious consequences.
-    
+
     \item For each subjective literal of the form \texttt{\&k\{\textapprox\ \emph{literal}\}}, \texttt{\emph{literal}} must not be in the brave consequences.
-    
+
     \item For each subjective literal of the form \texttt{not \&k\{\textapprox\ \emph{literal}\}}, \texttt{\emph{literal}} must be in in the brave consequences.
 \end{enumerate}
 
@@ -460,19 +464,19 @@ Thus, the guess may produce inconsistent combinations like, for instance, an ans
 \begin{align*}
 	\texttt{\{\&k\{\textapprox\ p\}, p\}}
 \end{align*}
-which is not inconsistent for the semantics of {\tt \&k}. 
+which is not inconsistent for the semantics of {\tt \&k}.
 %The subjective literal means that \texttt{p} is false in every answer set while in this proper one \texttt{p} is true. The same would happen in the opposite situation:
 %\begin{align*}
 %	\texttt{\{\&k\{p\}\}}
 %\end{align*}
 %where \texttt{p} must be true in every answer set while in this case, it is false.
-%This situation can lead to a bigger set of possible candidates to check, where each check is resolved, as we saw, by a $\Sigma^{P}_{2}$ routine (i.e., an invocation to clingo). 
+%This situation can lead to a bigger set of possible candidates to check, where each check is resolved, as we saw, by a $\Sigma^{P}_{2}$ routine (i.e., an invocation to clingo).
 This problem can be avoided by adding, to the program we use for the guess, the following pair of rules per each subjective literal:
 \begin{align}
 \texttt{:- aux\_\emph{lit}, not \emph{literal}.} \label{r:1} \\
 \texttt{:- aux\_not\_\emph{literal}, \emph{literal}.} \label{r:2}
 \end{align}
-where \texttt{\emph{literal}} is the objective literal that the subjective literal refers to. 
+where \texttt{\emph{literal}} is the objective literal that the subjective literal refers to.
 %As we can see, rule \eqref{r:1} means that if a literal has to be true in every answer set it also has to be in this one itself. In the same way, rule \ref{r:2} means that if a literal has to be false in every answer set it also has to be in this one itself.
 %
 This situation improves the efficiency of \eclingo{} in those cases that a world view is only proposed by inconsistent answer sets. We can also agree that these constraints can also help in the guess phase since the set of answer sets produced by this invocation to \clingo tends to be smaller.
@@ -510,7 +514,7 @@ is now completed with the additional rule:
 that corresponds to \eqref{f:rule1b} but for auxiliary atoms.
 
 %\subsubsection{Well-Founded Model}
-Another optimisation we have also implemented is based on the iterative computation of the well-founded model of the auxiliary guess program. 
+Another optimisation we have also implemented is based on the iterative computation of the well-founded model of the auxiliary guess program.
 %semantics is a well-known theory for negation as failure. Roughly, computing the well-founded model of a logic programming consists of partitioning the set of ground atoms into three sets that define its truth value: true, false, and unknown. This partitioning is performed by focusing on the structure of the rules. In this way, an atom is true if it appears alone in the head of a rule and that rule has no body (i.e., it is a fact). Similarly, an atom that does not appear in the head of any rule is considered false, since it is no way to derive it. Finally, the rest of the atoms (i.e., those that cannot be stated as true or false) are categorized as unknown.
 %
 %The proper definition of the well-founded model of a logic program allows to state some relations between the set of stable models of the logic program and the well-founded model itself. For example:
@@ -569,8 +573,8 @@ In this section we compare \eclingo{} with other two epistemic solvers, \wviews~
 The tool \wviews\footnote{\url{https://github.com/galactose/\wviews}} is a solver for epistemic specifications under G91 semantics developed by Michael Kelly for its Honour's Thesis. It is built upon the ASP system {\tt DLV} and allows the inclusion of subjective literals under a pretty simple notation. However, this simplicity is eclipsed by the limitations in the rest of its grammar. For instance, \wviews{} has no advanced options for specifying constants, show directives, aggregates or conditional literals, among others. Besides, the parser is very sensitive to minor changes in a same problem representation. In fact, we were not able to execute \wviews{} on programs with predicates with more than one argument, something that forced us to test the benchmarks for planning on ground programs.
 
 %\subsubsection{\EPASP}
-\EPASP\footnote{\url{https://github.com/tiep/EP-ASP}}~\cite{SLKL17} is another solver for epistemic specifications that can compute world views under two semantics: \cite{kawabagezh15} (K15)  (also computed by \eclingo{}) and~\cite{sheeit17a}. Just like \eclingo{}, it is built upon the ASP system \clingo, but under its 4.5.0 version. \EPASP{} input programs are generated using another independent and non-integrated tool, {\tt ELPS}~\cite{BK14}, that provides a method to translate an epistemic logic program with sort definitions into a standard ASP program. The grammar that defines a correct input program for {\tt ELPS} is, therefore, substantially different from the one used by \clingo{}. It considers four types of statements: directives, sort definitions, predicate declarations and rules. Directives can be either a constant definition or a {\tt maxint} declaration, so the range for numerical expressions is predefined, unlike in \clingo{}. 
-%Regarding the rest of the program, subjective literals can be included in the body of the rules under a pretty simple syntax. 
+\EPASP\footnote{\url{https://github.com/tiep/EP-ASP}}~\cite{SLKL17} is another solver for epistemic specifications that can compute world views under two semantics: \cite{kawabagezh15} (K15)  (also computed by \eclingo{}) and~\cite{sheeit17a}. Just like \eclingo{}, it is built upon the ASP system \clingo, but under its 4.5.0 version. \EPASP{} input programs are generated using another independent and non-integrated tool, {\tt ELPS}~\cite{BK14}, that provides a method to translate an epistemic logic program with sort definitions into a standard ASP program. The grammar that defines a correct input program for {\tt ELPS} is, therefore, substantially different from the one used by \clingo{}. It considers four types of statements: directives, sort definitions, predicate declarations and rules. Directives can be either a constant definition or a {\tt maxint} declaration, so the range for numerical expressions is predefined, unlike in \clingo{}.
+%Regarding the rest of the program, subjective literals can be included in the body of the rules under a pretty simple syntax.
 
 %the need of the independent and non-integrated tool {\tt ELPS} can be seen as a disadvantage, diusing two different, not fully integrated programs for solving the epistemic logic program can be seen as a difficulty in its usage. Also, while this epistemic logic program represents subjective literals in a very comfortable way, the way it is split makes the representation of the rest of the program a hard task.
 
@@ -584,7 +588,7 @@ Since the three tools have different dependencies, their installation in the sam
 \item \textbf{Sustained clock speed (GHz):} 2.5
 \item \textbf{Memory (MiB):} 1024
 \end{itemize}
-The chosen operative system is an Ubuntu Server 18.04 LTS, given as an AMI \footnote{Ubuntu Server 18.04 LTS (HVM) 64-Bit(x86). AMI ID: \texttt{ami-07ebfd5b3428b6f4d}}, this is, an \emph{Amazon Machine Image}. 
+The chosen operative system is an Ubuntu Server 18.04 LTS, given as an AMI \footnote{Ubuntu Server 18.04 LTS (HVM) 64-Bit(x86). AMI ID: \texttt{ami-07ebfd5b3428b6f4d}}, this is, an \emph{Amazon Machine Image}.
 %
 %The selected problems for the benchmarking are the Scholarship Eligibility Problem, since it is the first problem upon epistemic specifications were proposed, and the epistemic version of the Yale Shooting Problem, to see how the tools face a harder problem as conformant planning is.
 
@@ -628,7 +632,7 @@ Table \ref{tab:eligible} shows best execution time for 10 runs of the Scholarshi
 
 Table \ref{tab:yale} shows best execution time for 10 runs of the epistemic version of the Yale Shooting Problem by \EPASP{} under K15 semantics and \eclingo{} under G91 semantics. For this problem, 12 instances were provided. This comparison is less accurate than the eligibility example for several reasons. First, we have used two slightly different problem encodings. For \EPASP{}, we directly used the benchmarks provided with the tool, already translated from {\tt ELPS}, and applied the K15 semantics. Moreover, we used the recommended \EPASP{} configuration for planning. In this special configuration, \EPASP{} recognizes the action theory representation (fluents, actions, goals, etc) and is capable of applying planning based heuristics. In particular, \EPASP{} solves first the problem as a regular planning domain, and then uses this result to prune the search space for the conformant planning problem. For \eclingo{} we redesigned the epistemic rules in the scenario to use G91 instead, something that, under our understanding, provides a more natural use of the epistemic operators (see~\cite{cafafa19a} for a discussion). Besides, \eclingo{} does not apply any planning-based specific heuristics or optimisation: it treats all the scenarios as regular epistemic specifications\footnote{We also executed \EPASP{} for these benchmarks without using the planning mode, but it produced apparently incoherent results, immediately printing an empty world view.}.
 
-As we can see in Table \ref{tab:yale}, \EPASP{} in planning mode performs slightly better than \eclingo{} in all the cases solved by both tools. However, \EPASP{} reaches the timeout in three scenarios for path length 10, while \eclingo{} solves all of them. 
+As we can see in Table \ref{tab:yale}, \EPASP{} in planning mode performs slightly better than \eclingo{} in all the cases solved by both tools. However, \EPASP{} reaches the timeout in three scenarios for path length 10, while \eclingo{} solves all of them.
 \begin{table}[ht]
     \begin{tabular}{c|cc|c}
     \hline
@@ -696,3 +700,8 @@ Our future work includes the addition of other optimisation techniques and, more
 
 
 \end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:
