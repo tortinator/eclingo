@@ -271,7 +271,7 @@ As said before, \eclingo{} is based on \clingo's facilities (through the Python 
 %
 As a result, \eclingo{} input language is just a minor extension of the input language accepted by \gringo~\cite{gekaosscth09a}, the grounder used by \clingo. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
 
-The structure of a clingo rule is as follows:
+The structure of a \clingo\ rule is as follows:
 \begin{align*}
     H_1,\dots,H_m \ \mathtt{:\!-} \ B_1,\ \dots ,\ B_n.
 \end{align*}
@@ -354,7 +354,7 @@ SATISFIABLE
 \end{Verbatim}
 For future work, we will include an option to expand one or all world views into their sets of answer sets.
 %\subsubsection{Constant definitions}
-%eclingo delegates the processing of constant definitions to clingo. Thus, it does not provide any syntactical or semantical modification. Both clingo and \eclingo{} define constants under the following structure:
+%eclingo delegates the processing of constant definitions to \clingo. Thus, it does not provide any syntactical or semantical modification. Both \clingo and \eclingo{} define constants under the following structure:
 %\begin{align*}
 %    \texttt{\#const \emph{name}=\emph{value}.}
 %\end{align*}
@@ -397,7 +397,7 @@ Then, the choice rule added for each auxiliary atom is just:
 The main idea behind the parsing process was to generate an auxiliary representation of the problem that can be used as an input for \clingo. Thus, when asking \clingo to solve this program using its multi-shot feature, it will go returning answer sets in terms of these auxiliary literals. Each configuration of subjective atom values represents a particular world view. Filtering objective literals from \clingo's output, and removing duplicates, we can use these answer sets as a bounded pool of potential solutions.
 
 %\subsection{Solving an epistemic logic program} \label{subsec:solve}
-\eclingo\ solves epistemic logic programs following a guess and check strategy. This approach splits the solving process into two phases. In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding clingo with the auxiliary program and filtering the output answer sets. The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
+\eclingo\ solves epistemic logic programs following a guess and check strategy. This approach splits the solving process into two phases. In the first one, \eclingo{} generates a set of possible solutions to the original program, feeding \clingo\ with the auxiliary program and filtering the output answer sets. The world view representatives, that is, the auxiliary subjective atoms, are isolated and stored as potential solutions.
 
 In the check phase, \eclingo{} verifies these candidates and filters the subset of false candidates.
 This phase verifies a set of 4 properties over each candidate. However, the check cannot be done directly over the literals. Instead, the check is executed over the answer sets of a logic program, created by replacing each auxiliary subjective literal of the auxiliary program with the truth value it takes in the candidate. In this way, after the replacement, \eclingo{} invokes \clingo again with this replaced logic program and verifies the set of properties over the output answer sets. The aforementioned properties are the following:
@@ -472,7 +472,7 @@ which is not inconsistent for the semantics of {\tt \&k}.
 %	\texttt{\{\&k\{p\}\}}
 %\end{align*}
 %where \texttt{p} must be true in every answer set while in this case, it is false.
-%This situation can lead to a bigger set of possible candidates to check, where each check is resolved, as we saw, by a $\Sigma^{P}_{2}$ routine (i.e., an invocation to clingo).
+%This situation can lead to a bigger set of possible candidates to check, where each check is resolved, as we saw, by a $\Sigma^{P}_{2}$ routine (i.e., an invocation to \clingo).
 This problem can be avoided by adding, to the program we use for the guess, the following pair of rules per each subjective literal:
 \begin{align}
 \texttt{:- aux\_\emph{lit}, not \emph{literal}.} \label{r:1} \\
