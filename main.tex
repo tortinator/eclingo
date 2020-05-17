@@ -68,6 +68,7 @@
 \def\Bodymp{\mathit{Body}^+_{sub}}
 \def\bL{\K}
 \def\clingo{{\tt clingo}}
+\def\gringo{{\tt gringo}}
 \def\wviews{{\tt wviews}}
 \def\EPASP{{\tt EP-ASP}}
 \def\eligible{\mathit{eligible}}
@@ -268,7 +269,7 @@ then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.4} has a uniqu
 
 As said before, \eclingo{} is based on \clingo's facilities (through the Python API) for syntax extension and multi-shot solving.
 %
-As a result, \eclingo{} input language is just a minor extension of the input language accepted by {\tt gringo}~\cite{gekaosscth09a}, the grounder used by \clingo. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
+As a result, \eclingo{} input language is just a minor extension of the input language accepted by \gringo~\cite{gekaosscth09a}, the grounder used by \clingo. In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
 
 The structure of a clingo rule is as follows:
 \begin{align*}
@@ -533,12 +534,12 @@ Another optimisation we have also implemented is based on the iterative computat
 %\begin{theorem}
 %The subjective atom K \textapprox p holds for every p false in the well-founded model of a logic program.
 %\end{theorem}
-If, instead of computing the answer sets of the program, we just use {\tt gringo} to obtain its well-founded model (WFM), we will get a good estimate of regular atoms that are always true (resp. always false) in all the answer sets of the program.
+If, instead of computing the answer sets of the program, we just use \gringo\ to obtain its well-founded model (WFM), we will get a good estimate of regular atoms that are always true (resp. always false) in all the answer sets of the program.
 In particular, if an atom $p$ is true in the well-founded model, then $\K p$ will hold and we can safely add the corresponding auxiliary atom {\tt aux\_p}.
 The same happens if atom $p$ is false in the well-founded model: we conclude $\K \Not \, p$ and add the auxiliary atom {\tt aux\_not\_p}.
 %
 Thus, computing the well-founded model of the auxiliary logic program before performing the guess-and-check process can help us to deduce trivial subjective literal truth values. These true subjective literals are added to the guess program to reduce the search space. \eclingo{} implements this behaviour in an iterative strategy, computing this well-founded model after the addition of the facts, looping until no new knowledge is found with this method. This iterative execution can be seen in Algorithm \ref{alg:wfm}.
-Computing the well-founded model of a logic program takes a quadratic complexity in the general case, while computing the stable models of a logic program is $\Sigma^{P}_{2}$. This difference makes this heuristic a worthy strategy. One more time, \eclingo{} delegates the computation of this well-founded model to {\tt gringo} (i.e., {\tt clingo}'s grounder), which performs this computation during the grounding process. Thus, \eclingo{} performs this optimisation taking advantage of the mandatory grounding phase.
+Computing the well-founded model of a logic program takes a quadratic complexity in the general case, while computing the stable models of a logic program is $\Sigma^{P}_{2}$. This difference makes this heuristic a worthy strategy. One more time, \eclingo{} delegates the computation of this well-founded model to \gringo\ (i.e., \clingo's grounder), which performs this computation during the grounding process. Thus, \eclingo{} performs this optimisation taking advantage of the mandatory grounding phase.
 
 \begin{algorithm}[H]
 \SetAlgoLined
