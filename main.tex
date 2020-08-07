@@ -90,7 +90,7 @@
 \accepted{}
 \title[A solver for Epistemic Logic Programs]
     {\eclingo: A solver for Epistemic Logic Programs\thanks{Partially supported by MINECO, Spain, grant TIC2017-84453-P.
-    The second author is funded by the Alexander von Humboldt Foundation.}}
+    The second author is funded by the Alexander von Humboldt Foundation, Germany. The third author was partially supported by CITIC, Research Center of the Galician University System financed by the Conseller\'{i}a de Educaci\'on, Universidade e Formaci\'on Profesional (Xunta de Galicia) and co-financed 80\% by the ERDF (Ref. ED431G 2019/01).}}
 
   \author[P. Cabalar, J. Fandinno, J. Garea, J. Romero and T. Schaub]
          {Pedro Cabalar$^1$, Jorge Fandinno$^2$, Javier Garea$^1$, Javier Romero$^2$ and Torsten Schaub$^2$\\
@@ -106,6 +106,8 @@
 %\setcounter{page}{1}
 %\pubyear{2006}
 
+
+%\input{letter.tex}
 \maketitle
 
 \begin{abstract}
@@ -144,8 +146,8 @@ In general, the semantics of an epistemic logic program may yield alternative se
 %
 For instance, the epistemic program
 \begin{eqnarray}
-p \leftarrow \Not \, \K q \hspace{80pt}
-q \leftarrow \Not \, \K p  \label{f:epiloop}
+p \ \leftarrow \ \Not \, \K q \hspace{80pt}
+q \ \leftarrow \ \Not \, \K p  \label{f:epiloop}
 \end{eqnarray}
 %
 yields two world views $\{\{p\}\}$ and $\{\{q\}\}$, each one with a single stable model.
@@ -154,7 +156,7 @@ Deciding the intuitive world views of a cyclic program has motivated a wide deba
 %
 This was mostly due to the fact that Gelfond's original \mbox{semantics (G91)} manifests a kind of self-supportedness or \emph{unfoundedness} typically illustrated by the epistemic program
 \begin{eqnarray}
-p \leftarrow \K p \label{f:selfsupport}
+p \ \leftarrow \ \K p \label{f:selfsupport}
 \end{eqnarray}
 whose G91 world views are $\{\emptyset\}$ (as expected) but also $\{\{p\}\}$, which seems counterintuitive.
 %
@@ -172,7 +174,7 @@ This suggests that a solver for FAEEL can be constructed by applying an extra fo
 %
 In fact, so far, all practical scenarios existing in the literature that involve epistemic problems can be represented without positive subjective cycles, so their computation in terms of G91 is sound with respect to FAEEL too.
 
-In this paper, we present the \eclingo{} system\footnote{\url{https://github.com/javiergarea/eclingo}}, a solver for epistemic logic programs under the G91 semantics.
+In this paper, we present the \eclingo{} system\footnote{\url{https://github.com/potassco/eclingo}}, a solver for epistemic logic programs under the G91 semantics.
 %
 The tool is built on top of the ASP solver \clingo~\cite{gekakasc17a}
 making use of its features for syntactic extensions and multi-shot solving.
@@ -222,7 +224,7 @@ A \emph{subjective literal} can be a subjective atom $A$ or its default negation
 %
 A \emph{rule} is an expression of the form:
 \begin{gather}
-a_1 \vee \dots \vee a_n \leftarrow L_1, \dots, L_m
+a_1 \vee \dots \vee a_n \ \leftarrow \ L_1, \dots, L_m
 	\label{eq:rule}
 \end{gather}
 with $n\geq 0$ and $m\geq 0$, where each $a_i \in \At$ is an atom and each $L_j$ a literal, either objective or subjective.
@@ -231,9 +233,14 @@ As usual, the left and right hand sides of~\eqref{eq:rule} are respectively call
 %
 An \emph{epistemic program} (or epistemic specification) is a set of rules.
 %
-Given an epistemic program $\Pi$, we define the sets $\Facts(\Pi) \subseteq \Heads(\Pi) \subseteq \At(\Pi)$ as the atoms that occur as facts, in any rule head or in any part of the program, respectively.
+Given an epistemic program $\Pi$, we define $\At(\Pi)$ as the set of all atoms that occur in program~$\Pi$.
+%
+Similarly, by~$\Heads(\Pi)$, we the denote the set of all atoms that occur in the head of any rule in~$\Pi$ and, by $\Facts(\Pi)$, we denote the set of atoms that occur as facts in~$\Pi$.
+%
+Note that~$\Facts(\Pi) \subseteq \Head(\Pi) \subseteq \At(\Pi)$.
+%
 Let $\wv$ be a set of interpretations.
-We write $\wv \models \bL \ell$ if objective literal $\ell$ holds (under the usual meaning) in all interpretations of $\wv$ and $\wv \models \Not \bL \ell$ if $\ell$ does not hold in some interpretation of $\wv$.
+We write $\wv \models \bL \ell$ if objective literal $\ell$ holds (under the usual meaning) in all interpretations of $\wv$ and $\wv \models \Not \bL \ell$ if $\ell$ does not hold in some interpretation of~$\wv$.
 
 \begin{definition}[Subjective reduct]
 The \emph{subjective reduct} of an epistemic program $\Pi$ with respect to a set of propositional interpretations~$\wv$, written $\Pi^\wv$, is
@@ -275,8 +282,8 @@ For instance, if the only available information for some student $mike$ is the d
 \end{gather}
 then the epistemic program \eqref{ex:college.1}-\eqref{ex:college.5} has a unique world view whose answer sets are:
 \begin{eqnarray}
-&\{\fair(mike),\interview(mike)\}& \label{f:sm1}\\
-&\{\high(mike), \eligible(mike),\interview(mike)\} &\label{f:sm2}
+&\{\fair(mike),\,\interview(mike)\}& \label{f:sm1}\\
+&\{\high(mike),\,\eligible(mike),\,\interview(mike)\} &\label{f:sm2}
 \end{eqnarray}
 
 
@@ -290,12 +297,14 @@ As a result, \eclingo's input language is just a minor extension of the input la
 the grounder used by \clingo.
 In this way, \eclingo{} programs can be constructed with three different types of statements: \emph{rules}, \emph{show} statements and \emph{constant} definitions.
 
-The structure of a \clingo\ rule is as follows:
+The structure of a \clingo\ (or \eclingo{}) rule is as follows:
 \begin{align*}
     H_1,\dots,H_m  \text{ \texttt{:-} }  B_1,\dots,B_n.
 \end{align*}
-where the head is formed by \clingo\ literals $H_i$ (commas in the head represent a disjunction) and
+where the head is formed by \clingo\ literals $H_i$ and
 the body consists of elements $B_i$ that can be \clingo{} literals or subjective literals.
+%
+As happens in sequent calculus, commas in the antecedent (the body) represent a conjunction whereas commas in the consequent (the head) represent a disjunction.
 %
 The notation for subjective literals in \eclingo{} is as follows.
 %
@@ -318,7 +327,7 @@ eclingo -n 0 program1.lp
 \end{verbatim}
 getting the result:
 \begin{Verbatim}[frame=single]
-eclingo version 1.0.0
+eclingo version 0.2.0
 Solving...
 Answer: 1
 &k{ p }
@@ -326,7 +335,7 @@ Answer: 2
 &k{ q }
 SATISFIABLE
 \end{Verbatim}
-Each answer provided by \eclingo{} corresponds to some world view of the epistemic program $\Pi$, but expressed as a the set $X$ of those subjective literals that hold in the world view.
+Each answer provided by \eclingo{} corresponds to some world view of the epistemic program $\Pi$, but expressed as the set $X$ of those subjective literals that hold in the world view.
 %
 The set $X$ is enough to determine the answer sets in the world view.
 %
@@ -399,7 +408,7 @@ In the guessing phase, subjective literals are replaced by auxiliary atoms and a
 %
 In the case of G91 semantics, this replacement of subjective literals is as follows.
 %
-For each objective literal $\ell$, we define its corresponding auxiliary atom $\mathit{aux}_\ell$ as:
+For each objective literal~$\ell$, we define its corresponding auxiliary atom $\mathit{aux}_\ell$ as:
 \[
 \mathit{aux}_\ell \eqdef \left\{
 \begin{array}{ll}
@@ -437,13 +446,13 @@ In the checking phase, \eclingo{} verifies that each candidate actually constitu
 To this aim, we need to check several conditions on the subjective literals with respect to the answer sets of the candidate world view:
 %
 \begin{enumerate}
-    \item For each subjective literal \texttt{\&k\{$\ell$\}}, then $\ell$ must be in every answer set.
+    \item For each subjective literal \texttt{\&k\{$\ell$\}}, literal $\ell$ must be in every answer set.
 
-    \item For each subjective literal \texttt{not \&k\{$\ell$\}}, then $\ell$  must not be in every answer set.
+    \item For each subjective literal \texttt{not \&k\{$\ell$\}}, literal $\ell$ cannot be in every answer set.
 
-    \item For each subjective literal \texttt{\&k\{$\sim \ell$\}}, then $\ell$ must not be in any answer set.
+    \item For each subjective literal \texttt{\&k\{$\sim \ell$\}}, literal $\ell$ cannot be in any answer set.
 
-    \item For each subjective literal \texttt{not \&k\{$\sim \ell$\}}, $\ell$ must be in some answer set.
+    \item For each subjective literal \texttt{not \&k\{$\sim \ell$\}}, literal $\ell$ must be in some answer set.
 \end{enumerate}
 To obtain the answer sets of a candidate world view $X$, we would have to expand all the answers for $\Pi_X$ provided by \clingo{}. 
 %
@@ -527,7 +536,7 @@ Thus, the guess may produce epistemically inconsistent combinations like, for in
 %This situation can lead to a bigger set of possible candidates to check, where each check is resolved, as we saw, by a $\Sigma^{P}_{2}$ routine (i.e., an invocation to \clingo).
 This problem can be avoided by adding the rule:
 \begin{align*}
-&\mathtt{:-} \; \mathit{aux}_\ell, \overline{\ell}.
+&\text{\texttt{:-}} \; \mathit{aux}_\ell,\, \overline{\ell}.
 \end{align*}
 %As we can see, rule \eqref{r:1} means that if a literal has to be true in every answer set it also has to be in this one itself. In the same way, rule \ref{r:2} means that if a literal has to be false in every answer set it also has to be in this one itself.
 %
@@ -536,42 +545,43 @@ for each subjective literal of the form {\tt \&k\{$\ell$\}}, where $\overline{\e
 These constraints improve the efficiency of \eclingo{} by ruling out epistemically inconsistent world views during the guessing phase, without requiring their subsequent check.
 
 %\subsubsection{Completion}
-Another optimisation performed by \eclingo{} consists in extending the auxiliary logic program with a new set of auxiliary rules,
-which we call auxiliary \emph{completion} rules.
-This set of rules tries to resolve indirect dependencies between subjective literals.
-The idea of this translation is that, when we have the program rule:
-\begin{eqnarray}
-p \leftarrow q, \Not \ r, \K s.\label{f:rule1}
-\end{eqnarray}
-we can safely add the rule
-\begin{eqnarray}
-\K p \leftarrow \K q, \K \Not \ r, \K s. \label{f:rule1b}
-\end{eqnarray}
-that may allow for concluding more information once the subjective literals are replaced by auxiliary atoms.
-%
-As we can see, these completion rules may introduce new subjective literals (like $\bL p$, $\bL q$ and $\bL \Not\ r$ above) that are not essential for computing the world view and can be just treated as new auxiliary atoms.
-%
-For any of these new literals $\bL \ell$, we define the corresponding $\mathit{aux2}_\ell$ as we did before, but replacing prefix $\mathit{aux}$ by $\mathit{aux2}$.
-%
-Now, as an illustration, the rule \eqref{f:rule1} is represented in \eclingo{} notation as:
-\begin{align*}
-    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ \&k\{s\}.}
-\end{align*}
-and, as we explained before, is translated in the guessing phase as:
-\begin{align*}
-    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ aux\_s.}
-\end{align*}
-and would be now completed with the additional rule:
-\begin{align*}
-    \texttt{aux2\_p\text{ \texttt{:-}} aux2\_q,\ aux2\_not\_r,\ aux\_s.}
-\end{align*}
-that corresponds to \eqref{f:rule1b} using the new auxiliary atoms $\mathit{aux2}_\ell$.
-%
-These additional rules are built taking advantage of the parsing process, where the rules are translated to its auxiliary representation. In this way, every time
-a rule is translated (i.e., the rule has a subjective literal in the body), an auxiliary completion rule is added to the program.
+%Another optimisation performed by \eclingo{} consists in exten<ding the auxiliary logic program with a new set of auxiliary rules,
+%which we call auxiliary \emph{completion} rules.
+%This set of rules tries to resolve indirect dependencies between subjective literals.
+%The idea of this translation is that, when we have the program rule:
+%\begin{eqnarray}
+%p \ \leftarrow \ q,\, \Not \, r,\, \K s.\label{f:rule1}
+%\end{eqnarray}
+%we can safely add the rule
+%\begin{eqnarray}
+%\K p \ \leftarrow \ \K q,\, \K\!\Not \, r,\, \K s. \label{f:rule1b}
+%\end{eqnarray}
+%that may allow for concluding more information once the subjective literals are replaced by auxiliary atoms.
+%%
+%As we can see, these completion rules may introduce new subjective literals (like $\bL p$, $\bL q$ and $\bL \Not\ r$ above) that are not essential for computing the world view and can be just treated as new auxiliary atoms.
+%%
+%For any of these new literals $\bL \ell$, we define the corresponding $\mathit{aux2}_\ell$ as we did before, but replacing prefix $\mathit{aux}$ by $\mathit{aux2}$.
+%%
+%Now, as an illustration, the rule \eqref{f:rule1} is represented in \eclingo{} notation as:
+%\begin{align*}
+%    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ \&k\{s\}.}
+%\end{align*}
+%and, as we explained before, is translated in the guessing phase as:
+%\begin{align*}
+%    \texttt{p\text{ \texttt{:-}} q,\ not\ r,\ aux\_s.}
+%\end{align*}
+%and would be now completed with the additional rule:
+%\begin{align*}
+%    \texttt{aux2\_p\text{ \texttt{:-}} aux2\_q,\ aux2\_not\_r,\ aux\_s.}
+%\end{align*}
+%that corresponds to \eqref{f:rule1b} using the new auxiliary atoms $\mathit{aux2}_\ell$.
+%%
+%These additional rules are built taking advantage of the parsing process, where the rules are translated to its auxiliary representation. In this way, every time
+%a rule is translated (i.e., the rule has a subjective literal in the body), an auxiliary completion rule is added to the program.
+
 
 %\subsubsection{Well-Founded Model}
-A third optimisation implemented in \eclingo{} consists in using the grounder {\tt gringo} to approximate the well-founded model (WFM) of the auxiliary guess program $\Pi$.
+Another optimisation implemented in \eclingo{} consists in using the grounder {\tt gringo} to approximate the well-founded model (WFM) of the auxiliary guess program $\Pi$.
 %
 Computing the WFM of a logic program takes a polynomial complexity in the general case, while computing the stable models of $\Pi$ is $\Sigma^{P}_{2}$. This difference makes this heuristic a worthwhile strategy. 
 %
@@ -610,8 +620,6 @@ Of course, this behaviour is implemented in an iterative way until no new additi
 %
 Here, we use the set $K^+$ (resp. $K^-$) to collect every atom {\tt p} occurring in some expression $\mathtt{\&k\{p\}}$ (resp. $\mathtt{\&k\{\sim p\}}$) in the original epistemic program.
 %
-We also denote
-%
 The algorithm uses two set variables, one for facts $F$ and one for heads $H$, that are initially set to $\emptyset$ and $\at(\Pi)$, respectively.
 %
 Then, we repeat calls to {\tt gringo}'s function ground($\Pi$) while we obtain some new fact {\tt p} originally used in a subjective literal $\mathtt{\&k\{p\}}$ or we lose some head atom {\tt p} originally used in a subjective literal $\mathtt{\&k\{\sim p\}}$.
@@ -638,23 +646,25 @@ $\Pi$ := ground($\Pi$);\\
 To illustrate the algorithm, take Fig.~\ref{fig:p1} showing an \eclingo{} input program on the left and its corresponding guess program $\Pi_1$ on the right.
 %
 \begin{figure}[htbp]
-\begin{subfigure}{.45\textwidth}
-\begin{Verbatim}[frame=single]
+\begin{subfigure}{.4\textwidth}
+\begin{lstlisting}[frame = single, mathescape, basicstyle = \ttfamily, belowskip=37pt]
 a :- not b.
-c :- &k{a}.
-d :- not &k{~e}.
-p :- &k{~d}.
-
-\end{Verbatim}
+c :- &k{$\sim$a}.
+d :- not &k{$\sim$e}.
+p :- &k{$\sim$d}.
+\end{lstlisting}
 \end{subfigure}
-\begin{subfigure}{.45\textwidth}
-\begin{Verbatim}[frame=single]
+\hspace{25pt}
+\begin{subfigure}{.4\textwidth}
+\begin{lstlisting}[frame = single, mathescape, basicstyle = \ttfamily]
 a :- not b.
 c :- aux_a.
 d :- not aux_not_e.
 p :- aux_not_d.
-{aux_a}.  {aux_not_e}.  {aux_not_d}.  
-\end{Verbatim}
+{aux_a}.
+{aux_not_e}.
+{aux_not_d}.  
+\end{lstlisting}
 \end{subfigure}
 \setlength{\abovecaptionskip}{5pt}
 \caption{An \eclingo{} program (left) and its corresponding guess program $\Pi_1$ (right).}
@@ -669,7 +679,9 @@ a.
 c :- aux_a.
 d :- not aux_not_e.
 p :- aux_not_d.
-{aux_a}.  {aux_not_e}.  {aux_not_d}.  
+{aux_a}.
+{aux_not_e}.
+{aux_not_d}.  
 \end{Verbatim}
 where $\Facts(\Pi_2)=\{a\}$ and $\Heads(\Pi_2)$ consists of $\{a,c,d,p\}$ and the auxiliary atoms.
 %
@@ -713,25 +725,26 @@ A peculiarity of \wviews{} is that it computes \emph{all} the world views of an 
 
 Regarding the efficiency comparison, we have executed the three tools (i.e., \wviews, \EPASP{} and \eclingo) on scenarios for two well-known problems in the literature: the Eligibility problem (Example~\ref{ex:college}) and a variant of the Yale Shooting problem with incomplete knowledge about the initial state, looking for a conformant plan (that is, a plan that always succeeds, regardless of the initial state).
 %
-Experiments were performed using a set of \texttt{Amazon Web Services}\footnote{\url{https://aws.amazon.com/}} virtual machines. These virtual machines are instances of type \texttt{t2.micro} using 1 vCPU with processor {\tt Intel Xeon} family, clock speed 2.5 GHz and 1 GiB of memory.
-The chosen operating system is an Ubuntu Server 18.04 LTS, given as an AMI~\footnote{Ubuntu Server 18.04 LTS (HVM) 64-Bit(x86). AMI ID: \texttt{ami-085925f297f89fce1}}, this is, an \emph{Amazon Machine Image}.
+Experiments were performed on a machine equipped with an Intel i7-8550U (up to 4.0GHz) and 8GB memory running Ubuntu 18.04.4 LTS.
+% Experiments were performed using a set of \texttt{Amazon Web Services}\footnote{\url{https://aws.amazon.com/}} virtual machines. These virtual machines are instances of type \texttt{t2.micro} using 1 vCPU with processor {\tt Intel Xeon} family, clock speed 2.5 GHz and 1 GiB of memory.
+% The chosen operating system is an Ubuntu Server 18.04 LTS, given as an AMI~\footnote{Ubuntu Server 18.04 LTS (HVM) 64-Bit(x86). AMI ID: \texttt{ami-085925f297f89fce1}}, this is, an \emph{Amazon Machine Image}.
 %
-The times were measured using a python wrapper and taking the average of 10 different executions for each problem instance.
+The times were measured using a Python wrapper and taking the average of 10 different executions for each problem instance.
 %
-To avoid irregularities due to the server performance, a delay of 120s between each two executions was introduced.
+% To avoid irregularities due to the server performance, a delay of 120s between each two executions was introduced.
 %
 %The selected problems for the benchmarking are the Scholarship Eligibility Problem, since it is the first problem upon epistemic specifications were proposed, and the epistemic version of the Yale Shooting Problem, to see how the tools face a harder problem as conformant planning is.
 %
-Encodings can be downloaded from the Git repository.
+Encodings for \eclingo{} scenarios can be downloaded from the Git repository.
 It is important to note that \EPASP{} encodings are already preprocessed by {\tt ELPS}, so our execution times do not consider this translation step.
 
 Table \ref{tab:eligible} shows the average times for the Scholarship Eligibility Problem obtained by \wviews{} under G91 semantics, \EPASP{} under K15 semantics and \eclingo{} under both G91 and K15 semantics, to make a fair comparison. 
 %
 In this problem, the tools were fed with 25 scenarios denoted as eligibleXX were XX is the number of the instance and, at the same time, the number of students for the problem. 
 %
-As can be seen, \wviews{} can only solve the first 7 scenarios (with a timeout of 2 minutes) and only performs better than \eclingo{} in the first one. 
+As can be seen, \wviews{} can only solve the first 8 scenarios (with a timeout of 2 minutes) and only performs better than \eclingo{} in the first one. 
 %
-The performance of \eclingo{} is more solid, solving all the instances with homogeneous execution times between 0.045s and 0.065s. 
+The performance of \eclingo{} is more robust, solving 21 instances clearly below 1 second, and showing a slight grow (up to 3.35s) for the 4 larger instances.
 %
 Note that \eclingo{} is computing all the world views of the epistemic program, since this is default mode for \wviews{}.
 %
@@ -739,7 +752,7 @@ However, in the comparison with \EPASP{} (the last three columns) we just look f
 %
 The options we used for that solver were {\tt  pre=1, max=0} (brave/cautious preprocessing, and K15 semantics, respectively).
 %
-\EPASP{} solves 16 scenarios and reaches the timeout of 120s for the 9 remaining ones. For the first 9 scenarios (with the exception of {\tt eligible06}), \EPASP{} execution times are better but very close to \eclingo{} ones. However, in the examples from 10 to 16 the performance of \EPASP{} is clearly worse and, moreover, shows an unpredictable variability among the solved cases, from 0.088s in {\tt eligible16} to 52.69s for {\tt eligible12}. \eclingo{} under K15 solves the 25 scenarios in a range of times from 0.046s to 0.073s, being {\tt eligible25} an exception with a time of 0.789s.
+\EPASP{} solves 16 scenarios and reaches the timeout of 120s for the 9 remaining ones. For the first 9 scenarios (with the exception of {\tt eligible06}), \EPASP{} execution times are better but very close to \eclingo{} ones. However, in the examples from 10 to 16 the performance of \EPASP{} is clearly worse and, moreover, shows an unpredictable variability among the solved cases, from 0.063s in {\tt eligible15} and {\tt eligible16} to 44.96s for {\tt eligible12}. \eclingo{} under K15 solves the 25 scenarios in a range of times from 0.03s to 0.05s, except {\tt eligible25} that just takes 0.54s.
 When using G91 semantics, we get the same the world views (for this domain) but the \eclingo{} times are slightly better, since K15 is computed as a translation to G91.
 
 \begin{table}[ht]
@@ -747,31 +760,31 @@ When using G91 semantics, we get the same the world views (for this domain) but 
 \cline{1-6}
   & \multicolumn{2}{c|}{Computing all world views} & \multicolumn{3}{c}{Computing one world view} \\ \cline{1-6}
   & \texttt{Wviews G91} & \texttt{eclingo G91} & \texttt{EP-ASP K15} & \texttt{eclingo K15} & \texttt{eclingo G91} \\ \cline{1-6}
-\texttt{eligible01} & \textbf{0.029}     & 0.045   & \textbf{0.028}    & 0.046    & 0.045    \\
-\texttt{eligible02} & 0.049   & \textbf{0.046}   & \textbf{0.027}    & 0.047    & 0.046           \\
-\texttt{eligible03} & 0.128   & \textbf{0.046}   & \textbf{0.029}    & 0.048    & 0.047           \\
-\texttt{eligible04} & 0.465   & \textbf{0.046}   & \textbf{0.029}    & 0.048    & 0.047           \\
-\texttt{eligible05} & 1.843   & \textbf{0.047}   & \textbf{0.034}    & 0.049    & 0.048           \\
-\texttt{eligible06} & 8.222   & \textbf{0.048}   & 0.213             & 0.049    & \textbf{0.048}  \\
-\texttt{eligible07} & 40.703  & \textbf{0.050}   & \textbf{0.040}    & 0.051    & 0.049           \\
-\texttt{eligible08} & -       & \textbf{0.050}   & \textbf{0.042}    & 0.052    & 0.049           \\
-\texttt{eligible09} & -       & \textbf{0.053}   & \textbf{0.047}    & 0.053    & 0.049           \\
-\texttt{eligible10} & -       & \textbf{0.054}   & 2.533             & 0.055    & \textbf{0.050}  \\
-\texttt{eligible11} & -       & \textbf{0.061}   & 13.848            & 0.058    & \textbf{0.055}  \\
-\texttt{eligible12} & -       & \textbf{0.065}   & 50.534            & 0.059    & \textbf{0.055}  \\
-\texttt{eligible13} & -       & \textbf{0.069}   & 1.402             & 0.062    & \textbf{0.056}  \\
-\texttt{eligible14} & -       & \textbf{0.071}   & 15.264            & 0.062    & \textbf{0.056}  \\
-\texttt{eligible15} & -       & \textbf{0.069}   & 0.092             & 0.062    & \textbf{0.057}  \\
-\texttt{eligible16} & -       & \textbf{0.118}   & 0.088             & 0.077    & \textbf{0.053}  \\
-\texttt{eligible17} & -       & \textbf{0.174}   & -                 & 0.057    & \textbf{0.054}  \\
-\texttt{eligible18} & -       & \textbf{0.266}   & -                 & 0.059    & \textbf{0.055}  \\
-\texttt{eligible19} & -       & \textbf{0.753}   & -                 & 0.066    & \textbf{0.057}  \\
-\texttt{eligible20} & -       & \textbf{0.599}   & -                 & 0.072    & \textbf{0.056}  \\
-\texttt{eligible21} & -       & \textbf{0.837}   & -                 & 0.073    & \textbf{0.057}  \\
-\texttt{eligible22} & -       & \textbf{1.191}   & -                 & 0.070    & \textbf{0.059}  \\
-\texttt{eligible23} & -       & \textbf{1.911}   & -                 & 0.070    & \textbf{0.060}  \\
-\texttt{eligible24} & -       & \textbf{1.901}   & -                 & 0.070    & \textbf{0.060}  \\
-\texttt{eligible25} & -       & \textbf{5.125}   & -                 & 0.877    & \textbf{0.068}  \\ \cline{1-6}
+\texttt{eligible01} & \textbf{0.025}     & 0.035   & \textbf{0.024}    & 0.033    & 0.034    \\
+\texttt{eligible02} & 0.042   & \textbf{0.036}   & \textbf{0.021}    & 0.034    & 0.035           \\
+\texttt{eligible03} & 0.103   & \textbf{0.035}   & \textbf{0.022}    & 0.035    & 0.033           \\
+\texttt{eligible04} & 0.347   & \textbf{0.036}   & \textbf{0.023}    & 0.036    & 0.034           \\
+\texttt{eligible05} & 1.397   & \textbf{0.036}   & \textbf{0.025}    & 0.035    & 0.034           \\
+\texttt{eligible06} & 5.728   & \textbf{0.037}   & 0.138             & 0.037    & \textbf{0.035}  \\
+\texttt{eligible07} & 27.271  & \textbf{0.037}   & \textbf{0.031}    & 0.037    & 0.036           \\
+\texttt{eligible08} & 113.188 & \textbf{0.037}   & \textbf{0.032}    & 0.037    & 0.036           \\
+\texttt{eligible09} & -       & \textbf{0.039}   & \textbf{0.035}    & 0.039    & 0.037           \\
+\texttt{eligible10} & -       & \textbf{0.041}   & 1.795             & 0.039    & \textbf{0.037}  \\
+\texttt{eligible11} & -       & \textbf{0.048}   & 12.302            & 0.041    & \textbf{0.040}  \\
+\texttt{eligible12} & -       & \textbf{0.049}   & 44.959            & 0.043    & \textbf{0.040}  \\
+\texttt{eligible13} & -       & \textbf{0.049}   & 0.934             & 0.044    & \textbf{0.041}  \\
+\texttt{eligible14} & -       & \textbf{0.050}   & 13.574            & 0.045    & \textbf{0.041}  \\
+\texttt{eligible15} & -       & \textbf{0.048}   & 0.063             & 0.044    & \textbf{0.042}  \\
+\texttt{eligible16} & -       & \textbf{0.085}   & 0.063             & 0.054    & \textbf{0.040}  \\
+\texttt{eligible17} & -       & \textbf{0.150}   & -                 & 0.041    & \textbf{0.040}  \\
+\texttt{eligible18} & -       & \textbf{0.142}   & -                 & 0.043    & \textbf{0.041}  \\
+\texttt{eligible19} & -       & \textbf{0.392}   & -                 & 0.050    & \textbf{0.042}  \\
+\texttt{eligible20} & -       & \textbf{0.414}   & -                 & 0.049    & \textbf{0.041}  \\
+\texttt{eligible21} & -       & \textbf{0.567}   & -                 & 0.049    & \textbf{0.042}  \\
+\texttt{eligible22} & -       & \textbf{1.516}   & -                 & 0.049    & \textbf{0.043}  \\
+\texttt{eligible23} & -       & \textbf{1.015}   & -                 & 0.051    & \textbf{0.044}  \\
+\texttt{eligible24} & -       & \textbf{0.937}   & -                 & 0.050    & \textbf{0.044}  \\
+\texttt{eligible25} & -       & \textbf{3.347}   & -                 & 0.544    & \textbf{0.048}  \\ \cline{1-6}
 \end{tabular}
 \caption{Eligibility Problem. Time in seconds: timeout fixed in 120s.}
 \label{tab:eligible}
@@ -795,18 +808,18 @@ As we can see in Table \ref{tab:yale}, \EPASP{} in planning mode performs slight
 \cline{1-4}
 \multicolumn{4}{c}{Computing one world view}         \\ \cline{1-4}
            & \texttt{EP-ASP K15}, planning mode & \texttt{eclingo G91} & Path length \\ \cline{1-4}
-\texttt{yale01}  & \textbf{0.032}    & 0.053       & 1           \\
-\texttt{yale02}  & \textbf{0.033}    & 0.053       & 2           \\
-\texttt{yale03}  & \textbf{0.037}    & 0.055       & 3           \\
-\texttt{yale04}  & \textbf{0.037}    & 0.057       & 4           \\
-\texttt{yale05}  & \textbf{0.045}    & 0.066       & 5           \\
-\texttt{yale07}  & \textbf{0.060}    & 0.109       & 7           \\
-\texttt{yale08}  & \textbf{0.050}   & 0.073       & 8           \\
-\texttt{yale09}  & -                 & \textbf{0.492}       & 10          \\
-\texttt{yale10}  & \textbf{0.099}   & 0.405       & 10          \\
-\texttt{yale11}  & -                 & \textbf{0.161}       & 10          \\
-\texttt{yale12}  & \textbf{0.178}    & 1.470       & 10          \\
-\texttt{yale13}* & -                 & \textbf{0.683}       & 10          \\ \cline{1-4}
+\texttt{yale01}  & \textbf{0.025}    & 0.042       & 1           \\
+\texttt{yale02}  & \textbf{0.024}    & 0.039       & 2           \\
+\texttt{yale03}  & \textbf{0.027}    & 0.040       & 3           \\
+\texttt{yale04}  & \textbf{0.027}    & 0.040       & 4           \\
+\texttt{yale05}  & \textbf{0.033}    & 0.045       & 5           \\
+\texttt{yale07}  & \textbf{0.042}    & 0.073       & 7           \\
+\texttt{yale08}  & \textbf{0.036}   & 0.051       & 8           \\
+\texttt{yale09}  & -                 & \textbf{0.314}       & 10          \\
+\texttt{yale10}  & \textbf{0.068}   & 0.257       & 10          \\
+\texttt{yale11}  & -                 & \textbf{0.106}       & 10          \\
+\texttt{yale12}  & \textbf{0.119}    & 1.013       & 10          \\
+\texttt{yale13}* & -                 & \textbf{0.445}       & 10          \\ \cline{1-4}
 \end{tabular}
 \setlength{\abovecaptionskip}{5pt}
 \caption{Yale Shooting Problem. Time in seconds: timeout fixed in 120s. Problem yale13 is unsatisfiable.}
@@ -822,18 +835,18 @@ This is because the independent grounding we used is apparently less efficient, 
 \cline{1-4}
 \multicolumn{4}{c}{Computing all world views}             \\ \cline{1-4}
                    & \texttt{Wviews G91}   & \texttt{eclingo G91}  & Path length \\ \cline{1-4}
-\texttt{ground\_yale01}  & 0.069     & \textbf{0.048}    & 1           \\
-\texttt{ground\_yale02}  & 0.772     & \textbf{0.052}    & 2           \\
-\texttt{ground\_yale03}  & 13.766    & \textbf{0.060}    & 3           \\
-\texttt{ground\_yale04}  & -         & \textbf{0.063}    & 4           \\
-\texttt{ground\_yale05}  & -         & \textbf{0.096}    & 5           \\
-\texttt{ground\_yale07}  & -         & \textbf{0.328}    & 7           \\
-\texttt{ground\_yale08}  & -         & \textbf{0.180}    & 8           \\
-\texttt{ground\_yale09}  & -         & \textbf{2.811}    & 10          \\
-\texttt{ground\_yale10}  & -         & \textbf{34.072}   & 10          \\
-\texttt{ground\_yale11}  & -         & \textbf{38.026}   & 10          \\
-\texttt{ground\_yale12}  & -         & \textbf{79.873}   & 10          \\
-\texttt{ground\_yale13}* & -         & \textbf{3.053}    & 10          \\ \cline{1-4}
+\texttt{ground\_yale01}  & 0.054     & \textbf{0.038}    & 1           \\
+\texttt{ground\_yale02}  & 0.590     & \textbf{0.040}    & 2           \\
+\texttt{ground\_yale03}  & 11.330    & \textbf{0.042}    & 3           \\
+\texttt{ground\_yale04}  & -         & \textbf{0.046}    & 4           \\
+\texttt{ground\_yale05}  & -         & \textbf{0.063}    & 5           \\
+\texttt{ground\_yale07}  & -         & \textbf{0.230}    & 7           \\
+\texttt{ground\_yale08}  & -         & \textbf{0.108}    & 8           \\
+\texttt{ground\_yale09}  & -         & \textbf{2.137}    & 10          \\
+\texttt{ground\_yale10}  & -         & \textbf{25.521}   & 10          \\
+\texttt{ground\_yale11}  & -         & \textbf{28.702}   & 10          \\
+\texttt{ground\_yale12}  & -         & \textbf{59.013}   & 10          \\
+\texttt{ground\_yale13}* & -         & \textbf{2.278}    & 10          \\ \cline{1-4}
 \end{tabular}
 \setlength{\abovecaptionskip}{5pt}
 \caption{Ground version of the Yale Shooting Problem. Time in seconds: timeout fixed in 120s. Problem ground\_yale13 is unsatisfiable.}

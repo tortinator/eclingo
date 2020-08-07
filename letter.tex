@@ -1,0 +1,26 @@
+%!TEX root = paper.tex
+\newpage
+\pagestyle{empty}
+\newcommand\revtext[1]{\emph{\color{blue}#1}}
+We wish to thank the reviewers for their comments and suggestions that have surely helped to improve the paper. 
+One major change in the paper is the removal of the optimisation technique we had called ``completion atoms'': \eclingo{} was building the associated rules but, due to a bug in the code, they were never actually added. After checking their addition, we noticed that they did not provide any significative improvement and decided to suppress them by now (updating the benchmark times accordingly), until a more exhaustive study of their effect is performed. 
+
+We have implemented all the minor changes in the reviews. There were no suggested major changes, so we just provide below one minor clarification.
+
+{\bf Reviewer 3}
+
+\begin{enumerate}[label=R3.\arabic*]
+\item \revtext{A minor annotation: in Section 3, if the commas in the head of the rule
+\begin{align*}
+    H_1,\dots,H_m  \text{ \texttt{:-} }  B_1,\dots,B_n.
+\end{align*}
+represent a disjunction, what do the commas in the body represent?
+If they represent a conjunction of literals, a different notation should be used for the head atoms.}
+
+We have added the following clarification: ``As happens in sequent calculus, commas in the antecedent (the body) represent a conjunction whereas commas in the consequent (the head) represent a disjunction.'' 
+%
+This was one recent notation change introduced in \clingo{} that is directly inherited by \eclingo{}. Still, the use of `$;$' for head disjunction is also available.
+\end{enumerate}
+\newpage
+\pagestyle{plain}    
+\setcounter{page}{1}
